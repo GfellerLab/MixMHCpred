@@ -4,7 +4,6 @@
 # Make sure you are not using spaces or other special characters in your paths.
 
 #lib_path="YOUR PATH TO MixMHCpred1.0/lib FOLDER"
-lib_path="/Users/davidgfeller/Research/LICR/Research/Immunopeptidomics/Full_package_PLoSCompBio/MixMHCpred/source/MixMHCpred1.0/lib"
 
 
 if [[ "$lib_path" =~ " " ]]; then
