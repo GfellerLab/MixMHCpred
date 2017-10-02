@@ -3,8 +3,7 @@
 # Set the location here. This has to be manually done on your machine.
 # Make sure you are not using spaces or other special characters in your paths.
 
-#lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
-lib_path="/Users/davidgfeller/Research/LICR/Research/Immunopeptidomics/C-terminal_extensions/MixMHCpred/source/MixMHCpred1.1/lib"
+lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
 
 #echo $lib_path
 
