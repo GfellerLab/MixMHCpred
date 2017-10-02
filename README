@@ -1,28 +1,39 @@
 
 ###############
-# MixMHCpred1.0 is a predictor of HLA ligand displayed at the cell surface.
+# MixMHCpred1.1 is a predictor of HLA ligand displayed at the cell surface.
 # It was trained on naturally presented peptides coming from
 # in-depth HLA peptidomics studies of unmodified cell lines and tissue samples.
 #
-# MixMHCpred1.0 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred1.1 can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
 # FOR-PROFIT USERS
-# If you plan to use MixMHCpred (version 1.0) in any for-profit
+# If you plan to use MixMHCpred (version 1.1) in any for-profit
 # application, you are required to obtain a separate  license.
 # To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
 #
-# If you use MixMHCpred1.0 in a publication, please cite:
+# If you use MixMHCpred1.1 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA
 # peptidomes improves neo-antigen predictions and identifies allostery
-# regulating HLA specificity  (2017).
+# regulating HLA specificity, PLoS Comp Bio, 13, e1005725 (2017).
+# and
+# Guillaume et al. The C-terminal extension landscape of naturally presented HLA-I ligands (2017).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
-# Copyright (2016) David Gfeller
+# Copyright (2017) David Gfeller
 ###############
 
+########################
+NEW FEATURES OF VERSION 1.1
+########################
+
+Compared to version 1.0 [Bassani-Sternberg et al. (2017)], MixMHCPred1.1 explicitly includes C-terminal extensions in the
+predictions for eight alleles (HLA-A02:03, HLA-A02:07, HLA-A03:01,
+HLA-A31:01, HLA-A68:01, HLA-A68:02, HLA-B27:05 and HLA-B54:01) which
+have been shown to display such extensions. Modeling C-terminal
+extensions is performed with a mixture of Position Weight Matrices.
 
 ############
 INSTALLATION
@@ -30,17 +41,17 @@ INSTALLATION
 
 For Mac:
 
-1) Dowload the MixMHCpred1.0.zip file and move it to a directory
+1) Dowload the MixMHCpred1.1.zip file and move it to a directory
 of your choice, where you have writing permissions.
 
-2) Unzip the MixMHCpred1.0.zip package.
+2) Unzip the MixMHCpred1.1.zip package.
 
 3) Open the MixMHCpred file and replace lib_path by the
-path to the MixMHCpred1.0/lib directory where you have installed the script
+path to the MixMHCpred1.1/lib directory where you have installed the script
 
-4) To run it from anywhere on your computer, add the MixMHCpred1.0 directory to your path.
+4) To run it from anywhere on your computer, add the MixMHCpred1.1 directory to your path.
 
-5) To test your installation, make sure you are inthe MixMHCpred1.0 directory and run the command:
+5) To test your installation, make sure you are inthe MixMHCpred1.1 directory and run the command:
 
    ./MixMHCpred -i test/test.fa -o test/out.txt -h A0101,A2501,B0801,B1801
 
@@ -57,7 +68,7 @@ melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
 For Linux:
 
 After step 3), you also need to compile the MixMHCpred.cc code. Go to
-MixMHCpred1.0/lib and compile with your favorite C++ compiler
+MixMHCpred1.1/lib and compile with your favorite C++ compiler
 (e.g. c++ MixMHCpred.cc -o MixMHCpred.x)
 
 
@@ -71,11 +82,11 @@ MixMHCpred -i input_file -o output_file -h allele1,allele2
 
 input_file:
 File listing all the peptides. Ideally a fasta file, but text files
-are supported and lines starting with ">" are simply skipped.
-All peptides should be 9- or 10-mers.
+are supported and lines starting with ">" are skipped.
+All peptides should 9 or 10-mers.
 
 allele:
-HLA-I alleles. Use the simple nomenclature like A0101.
+HLA-I allele. Use the simple nomenclature like A0101.
 A01:01, A*01:01 or HLA-A*01:01 are also supported, but not
 recommanded. If you want to make predictions with multiple
 alleles, list the different alleles separated by a single comma ","
@@ -90,6 +101,7 @@ The name of the output file.
 OTHER INFORMATION
 #################
 
+
 - MixMHCpred is meant for scoring different peptides and prioritizing
   the most likely HLA-I ligands. As it is trained on naturally presented
   peptides, it does not output a predicted affinity value, simply a score.
@@ -103,14 +115,14 @@ OTHER INFORMATION
   score (or higer) for the set of alleles given in input. It is computed based on
   a random sampling of 100,000 peptides from the human proteome.
   This P-value is simply an indicator of how
-  a given peptide scores compared to a universe of random peptides. It
+  the score of given peptide compares to a universe of random peptides. It
   should not be used as an indication of statistical significance or evolutionary pressure
   and does not include multiple testing corrections.
   Also, it is computed separately for 9-mers and 10-mers, which explains why it does not scale monotonously
   with the Max_score if you have a mixture of 9- and 10-mers.
-  For this reason, we advise users to use the Max_score to rank predictions to be experimentally tested.
+  We advise users to use the Max_score to rank predictions to be experimentally tested.
   
-- The list of alleles is provided in MixMHCpred1.0/lib/pwm/allele_list.txt.
+- The list of alleles is provided in MixMHCpred1.0/lib/allele_list.txt.
   The last column indicates whether the data to train our predictor come
   from deconvoluted HLA peptidomics studies with unmodified cell lines
   or tissue samples (1) or from mono-allelic cell lines [Abelin et al. Immunity (2017)] (2).
@@ -118,7 +130,7 @@ OTHER INFORMATION
   list, you will not be able to make predictions for them (NA in the
  corresponding column in the output).
   
-- The MixMHCpred1.0/tmp/ directory is used to store temporary files. Make
+- The MixMHCpred1.1/tmp/ directory is used to store temporary files. Make
   sure there is no restriction for writing and reading files in this directory.
 
 - Predictions of Cystein containing peptides are less reliable due to the low detection rate of Cys in MS.

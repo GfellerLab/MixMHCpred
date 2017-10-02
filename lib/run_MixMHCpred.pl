@@ -1,13 +1,12 @@
-#!/usr/bin/perl
 
 ################
-# Written by David Gfeller
+# Written by David Gfeller.
 
 # The product is provided free of charge for academic users and, therefore, on an "as is" basis, without warranty of any kind.
 
-# For any question or commercial use, please ask david.gfeller@unil.ch
+# For any question or commercial use, please ask david.gfeller@unil.ch.
 
-# Copyright (2016) David Gfeller
+# Copyright (2016) David Gfeller.
 ################
 
 use strict;
@@ -112,18 +111,32 @@ foreach $p (@peptide){
 #######################################
 
 my %cond_allele=();
+my %Nmotifh=();
+my %Ctermh=();
+my %Ntermh=();
 my @a=();
 my @allele_list_pres9=(); for(my $i=0; $i<$nh; $i++){$allele_list_pres9[$i]=0;}
 my @allele_list_pres10=(); for(my $i=0; $i<$nh; $i++){$allele_list_pres10[$i]=0;}
+my @Nmotif9=(); for(my $i=0; $i<$nh; $i++){$Nmotif9[$i]=0;}
+my @Nmotif10=(); for(my $i=0; $i<$nh; $i++){$Nmotif10[$i]=0;}
+my @Cterm9=(); for(my $i=0; $i<$nh; $i++){$Cterm9[$i]=0;}
+my @Cterm10=(); for(my $i=0; $i<$nh; $i++){$Cterm10[$i]=0;}
+my @Nterm9=(); for(my $i=0; $i<$nh; $i++){$Nterm9[$i]=0;}
+my @Nterm10=(); for(my $i=0; $i<$nh; $i++){$Nterm10[$i]=0;}
 my $i;
 my $t9;
 my$t10;
 
+
 if($lg_pres[9]==1){
-    foreach $h (@allele_list){
+   foreach $h (@allele_list){
 	$cond_allele{$h}=0;
+	$Nmotifh{$h}=0;
+	$Ctermh{$h}=0;
+	$Ntermh{$h}=0;
     }
-    open IN, "$lib_dir/pwm/allele_list.txt", or die;
+    open IN, "$lib_dir/allele_list.txt", or die;
+    $l=<IN>;
     while($l=<IN>){
 	$l =~ s/\r?\n$//;
 	chomp($l);
@@ -131,20 +144,31 @@ if($lg_pres[9]==1){
 	foreach $h (@allele_list){
 	    if($a[1] eq $h && $a[0] eq 9){
 		$cond_allele{$h}=1;
+		$Nmotifh{$h}=$a[3];
+		$Ctermh{$h}=$a[4];
+		$Ntermh{$h}=$a[5];
 	    }
 	}
     }
+    close IN;
     $t9=0;
     $i=0;
-    
+
     foreach $h (@allele_list){
+	#print "$h\n";
 	if($cond_allele{$h}==0){
 	    print "Uncharacterized allele for 9-mers: $h\n";
 	    #exit();
 	    $t9++;
 	    $allele_list_pres9[$i]=0;
+	    $Nmotif9[$i]=0;
+	    $Cterm9[$i]=0;
+	    $Nterm9[$i]=0;
 	} else {
 	    $allele_list_pres9[$i]=1;
+	    $Nmotif9[$i]=$Nmotifh{$h};
+	    $Cterm9[$i]=$Ctermh{$h};
+	    $Nterm9[$i]=$Ntermh{$h};
 	}
 	$i++
     }
@@ -154,11 +178,16 @@ if($lg_pres[9]==1){
     }
 }
 
+
 if($lg_pres[10]==1){
     foreach $h (@allele_list){
 	$cond_allele{$h}=0;
+	$Nmotifh{$h}=0;
+	$Ctermh{$h}=0;
+	$Ntermh{$h}=0;
     }
-    open IN, "$lib_dir/pwm/allele_list.txt", or die;
+    open IN, "$lib_dir/allele_list.txt", or die;
+    $l=<IN>;
     while($l=<IN>){
 	$l =~ s/\r?\n$//;
 	chomp($l);
@@ -166,6 +195,9 @@ if($lg_pres[10]==1){
 	foreach $h (@allele_list){
 	    if($a[1] eq $h && $a[0] eq 10){
 		$cond_allele{$h}=1;
+		$Nmotifh{$h}=$a[3];
+		$Ctermh{$h}=$a[4];
+		$Ntermh{$h}=$a[5];
 	    }
 	}
     }
@@ -177,8 +209,14 @@ if($lg_pres[10]==1){
 	    print "Uncharacterized allele for 10-mers: $h\n";
 	    $t10++;
 	    $allele_list_pres10[$i]=0;
+	    $Nmotif10[$i]=0;
+	    $Cterm10[$i]=0;
+	    $Nterm10[$i]=0;
 	} else {
 	    $allele_list_pres10[$i]=1;
+	    $Nmotif10[$i]=$Nmotifh{$h};
+	    $Cterm10[$i]=$Ctermh{$h};
+	    $Nterm10[$i]=$Ntermh{$h};
 	}
 	$i++
     }
@@ -187,17 +225,22 @@ if($lg_pres[10]==1){
 	#print "None of your alleles are characterized in MixMHCpred for 10-mers...\n";
     }
 }
- 
+
+
+
+#Stop if only 9-mers and no predictions available
 if( $t9==$nh && $lg_pres[10]==0 ){
-    print "Sorry, no predictions available for your alleles @allele_list...\n";
+    print "Sorry, no predictions available for your alleles...\n";
     exit();
 }
+#Stop if only 10-mers and no predictions available for all alleles
 if($t10==$nh && $lg_pres[9]==0){
-    print "Sorry, no predictions available for your alleles @allele_list with 10-mers...\n";
+    print "Sorry, no predictions available for your alleles with 10-mers...\n";
     exit();
 }
+#Stop if no predictions available
 if($t9==$nh && $t10==$nh){
-    print "Sorry, no predictions available for your alleles @allele_list...\n";
+    print "Sorry, no predictions available for your alleles...\n";
     exit();
 }
 
@@ -226,9 +269,9 @@ close OUT;
 
 #die;
 
-#print "$lib_dir/MixMHCpred.x $output_file $lib_dir $rd $nh @allele_list  @allele_list_pres9  @allele_list_pres10\n";
+#print "$output_file $lib_dir $rd $input $nh @allele_list @allele_list_pres9 @allele_list_pres10 @Nmotif9 @Nmotif10 @Cterm9 @Cterm10 @Nterm9 @Nterm10\n";
 
-system("$lib_dir/MixMHCpred.x $output_file $lib_dir $rd $input $nh @allele_list  @allele_list_pres9  @allele_list_pres10");
+system("$lib_dir/MixMHCpred.x $output_file $lib_dir $rd $input $nh @allele_list @allele_list_pres9 @allele_list_pres10 @Nmotif9 @Nmotif10 @Cterm9 @Cterm10 @Nterm9 @Nterm10");
 
 if(-d "$lib_dir/../tmp/$rd"){
     system("rm -fr $lib_dir/../tmp/$rd/");
