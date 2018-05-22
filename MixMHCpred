@@ -26,7 +26,6 @@
 # Make sure you are not using spaces or other special characters in your paths.
 lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
 
-#echo $lib_path
 
 if [[ "$lib_path" =~ " " ]]; then
     echo Spaces in path to MixMHCpred are not supported
@@ -48,7 +47,7 @@ Mandatory parameters:
 
   -i, --input             Absolute or relative path to the input file (fasta format or list of peptides)
   -o, --output            Name of the output file
-  -a, --alleles           List of HLA alleles separated by commas (e.g., A0101,A0201,B0702,B0801)
+  -a, --alleles           List of HLA alleles separated by commas (e.g., A0301,A2402,B1501,B3906,C0303,C0702)
 
 Optional parameters:
 
