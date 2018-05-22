@@ -42,6 +42,7 @@ usage="Usage: MixMHCpred -i INPUT_FILE -o OUTPUT_FILE -h LIST_OF_ALLELES"
 
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
 cat <<END
+MixMHCpred2.0
 $usage
 Mandatory parameters:
 
