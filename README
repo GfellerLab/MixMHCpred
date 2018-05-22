@@ -1,66 +1,60 @@
 
 ###############
-# MixMHCpred1.1 is a predictor of HLA ligand displayed at the cell surface.
-# It was trained on naturally presented peptides coming from
-# in-depth HLA peptidomics studies of unmodified cell lines and tissue samples.
+# MixMHCpred2.0 is a predictor of HLA-I ligand displayed at the cell surface.
 #
-# MixMHCpred1.1 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred2.0 can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
 # FOR-PROFIT USERS
-# If you plan to use MixMHCpred (version 1.1) in any for-profit
+# If you plan to use MixMHCpred (version 2.0) or any data provided with the script in any for-profit
 # application, you are required to obtain a separate  license.
 # To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
 #
-# If you use MixMHCpred1.1 in a publication, please cite:
-# Bassani-Sternberg M et al. Deciphering HLA motifs across HLA
-# peptidomes improves neo-antigen predictions and identifies allostery
-# regulating HLA specificity, PLoS Comp Bio, 13, e1005725 (2017).
+# If you use MixMHCpred2.0 in a publication, please cite:
+# Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity  (2017).
 # and
-# Guillaume et al. The C-terminal extension landscape of naturally presented HLA-I ligands, BioRxiv, doi:10.1101/213264 (2017).
+# Gfeller et al. Peptide length distribution and multiple specificity in naturally presented HLA-I ligands, bioRxiv (2018).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
-# Copyright (2017) David Gfeller
+# Copyright (2018) David Gfeller
 ###############
 
 ########################
-NEW FEATURES OF VERSION 1.1
+NEW FEATURES OF VERSION 2.0
 ########################
 
-Compared to version 1.0 [Bassani-Sternberg et al. (2017)], MixMHCPred1.1 explicitly includes C-terminal extensions in the
-predictions for eight alleles (HLA-A02:03, HLA-A02:07, HLA-A03:01,
-HLA-A31:01, HLA-A68:01, HLA-A68:02, HLA-B27:05 and HLA-B54:01) which
-have been shown to display such extensions. Modeling C-terminal
-extensions is performed with a mixture of Position Weight Matrices.
+- Modeling HLA-I specificity with multiple motifs.
+- Larger allele coverage (123 HLA-I alleles) based on manual curation of HLA-I motifs in pooled HLA peptidomics datasets, and inclusion of IEDB data for alleles not present in recent HLA peptidomics datasets.
+- Predictions for 8- to 14-mers.
+- Explicitly modeling peptide length distribution
+- Possibility to disregard cystein-containing peptides (option "-c 0", all peptides containing a Cystein are given a score of -100.0). Cysteine can create many issues in binding or immunogenicity assays. In addition it is poorly detected in many HLA peptidomics samples, and therefore is more difficult to accurately predict.
 
 ############
 INSTALLATION
 ############
 
-For Mac:
+For Mac and Linux:
 
-1) Dowload the MixMHCpred1.1.zip file and move it to a directory
+1) Dowload the MixMHCpred2.0.zip file and move it to a directory
 of your choice, where you have writing permissions.
 
-2) Unzip the MixMHCpred1.1.zip package.
+2) Unzip the MixMHCpred2.0.zip package.
 
 3) Open the MixMHCpred file and replace lib_path by the
-path to the MixMHCpred1.1/lib directory where you have installed the script
+path to the MixMHCpred2.0/lib directory where you have installed the script
 
-4) To run it from anywhere on your computer, add the MixMHCpred1.1 directory to your path.
+4) To run it from anywhere on your computer, add the MixMHCpred2.0. directory to your path.
 
-5) To test your installation, make sure you are inthe MixMHCpred1.1 directory and run the command:
+5) To test your installation, make sure you are in the MixMHCpred2.0/ directory and run the command (should not take more than a few seconds):
 
-   ./MixMHCpred -i test/test.fa -o test/out.txt -h A0101,A2501,B0801,B1801
+   ./MixMHCpred -i test/test.txt -o test/out.txt -a A0301,A2402,B1501,B3906,C0303,C0702
 
 Your file out.txt should be the same as test/out_compare.txt, except for
 the fourth line that indicates the path of the input file and running
 the script should take less than 5 seconds.
-The test.fa file corresponds to all possible neo-antigens (i.e.,
-9- and 10-mers containing one missense mutation) in Mel_5
-melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
+The test.fa file corresponds to the peptides found by MS in a meningioma sample (Gfeller et al BioRxiv 2018).
 
 - Do not use spaces in your file or directory names.
 - Do not use other special characters (e.g., *, ?, %, &,...).
@@ -68,7 +62,7 @@ melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
 For Linux:
 
 After step 3), you also need to compile the MixMHCpred.cc code. Go to
-MixMHCpred1.1/lib and compile with your favorite C++ compiler
+MixMHCpred2.0/lib and compile with your favorite C++ compiler
 (e.g. c++ MixMHCpred.cc -o MixMHCpred.x)
 
 
@@ -78,7 +72,7 @@ RUNNING
 ########
 
 Command:
-MixMHCpred -i input_file -o output_file -h allele1,allele2
+MixMHCpred -i input_file -o output_file -a allele1,allele2
 
 input_file:
 File listing all the peptides. Ideally a fasta file, but text files
@@ -90,10 +84,13 @@ HLA-I allele. Use the simple nomenclature like A0101.
 A01:01, A*01:01 or HLA-A*01:01 are also supported, but not
 recommanded. If you want to make predictions with multiple
 alleles, list the different alleles separated by a single comma ","
-(e.g. -h A0101,A2501,B0801,B1801).
+(e.g. -a A0101,A2501,B0801,B1801).
 
 output_file:
 The name of the output file.
+
+cysteine (-c, optional):
+-c 0 excludes all cysteine containing peptides. -c 1 keeps them (default).
 
 
 
@@ -106,33 +103,24 @@ OTHER INFORMATION
   the most likely HLA-I ligands. As it is trained on naturally presented
   peptides, it does not output a predicted affinity value, simply a score.
 
-- The rank column in the output shows the rank of each peptide compared to all peptides provided in input.
-  It is based on the maximum score across the alleles provided by the user.
-  It can be used to prioritize peptides to be experimentally tested
-  depending on the financial and technological means available in each lab.
- 
-- The p-value shows how likely it is to have a peptide with a given
+- The score is computed for each allele provided in input, and the maximal score (column 2) is used to determine the most likely allele (column 3).
+
+- The P-value column shows how likely it is to have a peptide with a given
   score (or higer) for the set of alleles given in input. It is computed based on
-  a random sampling of 100,000 peptides from the human proteome.
-  This P-value is simply an indicator of how
-  the score of given peptide compares to a universe of random peptides. It
-  should not be used as an indication of statistical significance or evolutionary pressure
-  and does not include multiple testing corrections.
-  Also, it is computed separately for 9-mers and 10-mers, which explains why it does not scale monotonously
-  with the Max_score if you have a mixture of 9- and 10-mers.
-  We advise users to use the Max_score to rank predictions to be experimentally tested.
+  a random sampling of 700,000 peptides from the human proteome (8- to 14-mers).
+  This P-value is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). For a single allele, scores larger than 0 correspond to P-values smaller than 0.01.
   
-- The list of alleles is provided in MixMHCpred1.0/lib/allele_list.txt.
-  The last column indicates whether the data to train our predictor come
-  from deconvoluted HLA peptidomics studies with unmodified cell lines
-  or tissue samples (1) or from mono-allelic cell lines [Abelin et al. Immunity (2017)] (2).
-  If some alleles provided in input are not part of the
-  list, you will not be able to make predictions for them (NA in the
- corresponding column in the output).
+- The list of alleles is provided in MixMHCpred2.0/lib/allele_list.txt.
+  The third column indicates the number of motifs used to describe the specificity of a given allele
   
-- The MixMHCpred1.1/tmp/ directory is used to store temporary files. Make
+- The MixMHCpred2.0/tmp/ directory is used to store temporary files. Make
   sure there is no restriction for writing and reading files in this directory.
 
 - Predictions of Cystein containing peptides are less reliable due to the low detection rate of Cys in MS.
   Given that Cystein can create many experimental issues with binding and immunogenicity assays,
-  for practical applications, we advise to remove cysteine containing peptides from the list of peptides.
+  for practical applications, it can be useful to remove cysteine containing peptides from the list of peptides (-c 1).
+
+- the lib/pwm/ folder contains the different PWMs for each allele and each length of ligands.
+  The 6th line indicates the weight (differs than one for alleles modelled with multiple motifs),
+  the number of unique ligands used to train the model and the origin of the data
+  (1: unfiltered and curated MS data; 2: IEDB_MS data; 3: IEDB_non_MS data; 0: extrapolation from other length). 

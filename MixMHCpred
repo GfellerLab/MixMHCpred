@@ -1,9 +1,31 @@
 #!/bin/bash
 
+###############
+# MixMHCpred2.0 is a predictor of HLA ligand displayed at the cell surface.
+#
+# MixMHCpred2.0 can be used freely by academic groups for non-commercial purposes (see license).
+# The product is provided free of charge, and, therefore, on an "as is"
+#  basis, without warranty of any kind.
+#
+# FOR-PROFIT USERS
+# If you plan to use MixMHCpred (version 2.0) or any data provided with the script in any for-profit
+# application, you are required to obtain a separate  license.
+# To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
+#
+# If you use MixMHCpred2.0 in a publication, please cite:
+# Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity  (2017).
+# and
+# Gfeller et al. Peptide length distribution and multiple specificity in naturally presented HLA-I ligands, bioRxiv (2018).
+#
+# For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
+#
+# Copyright (2018) David Gfeller
+###############
+
 # Set the location here. This has to be manually done on your machine.
 # Make sure you are not using spaces or other special characters in your paths.
-
-lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
+#lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
+lib_path="/Users/davidgfeller/Research/LICR/Research/Immunopeptidomics/Full_package/MixMHCpred/source/MixMHCpred2.0/lib"
 
 #echo $lib_path
 
@@ -18,16 +40,40 @@ if [ ! -f "$lib_path"/MixMHCpred.x ]; then
 	exit 1;
 fi
 
+usage="Usage: MixMHCpred -i INPUT_FILE -o OUTPUT_FILE -h LIST_OF_ALLELES"
+
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+cat <<END
+$usage
+Mandatory parameters:
+
+  -i, --input             Absolute or relative path to the input file (fasta format or list of peptides)
+  -o, --output            Name of the output file
+  -a, --alleles           List of HLA alleles separated by commas (e.g., A0101,A0201,B0702,B0801)
+
+Optional parameters:
+
+  -c, --cysteine          Option to exclude Cystein containing peptides (-c 0). Default is to keep them (-c 1)
+
+END
+	exit 0;
+fi
+
 
 # Parse flags
 while [ $# -gt 0 ]; do
 	case $1 in
 		-i | --input) input=$2; shift 2;;
 		-o | --output) output_file=$2; shift 2;;
-		-h | --allele) alleles=$2; shift 2;;
+		-a | --allele) alleles=$2; shift 2;;
+		-c | --cysteine) cys=$2; shift 2;;
 		*) shift 1;;
 	esac
 done
+
+
+
+
 
 input=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $input`;
 if [[ "$input" =~ " " ]]; then
@@ -39,6 +85,18 @@ if [ ! -f $input ]; then
 	exit 1;
 fi
 
+if [ ! -n "$alleles" ]; then
+	echo Missing alleles
+	exit 1;
+fi
+
+if [ ! -n "$cys" ]; then
+    cys=1
+fi
+
+#echo $cys
+
+
 dir=$(pwd)
 output_file=$dir/$output_file
 if [[ "$input" =~ " " ]]; then
@@ -46,4 +104,4 @@ if [[ "$input" =~ " " ]]; then
     exit 1;
 fi
 
-perl $lib_path/run_MixMHCpred.pl --alleles $alleles --input $input --dir $dir --output $output_file --lib $lib_path
+perl $lib_path/run_MixMHCpred.pl --alleles $alleles --input $input --dir $dir --output $output_file --lib $lib_path --cys $cys
