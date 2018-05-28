@@ -158,10 +158,7 @@ while($l=<IN>){
     foreach $h (@allele_list){
 	if($a[1] eq $h){
 	    $shifts[$a[0]][$t]=$a[2];
-	    if(substr($h, 0, 1) eq "C"){
-		#$shifts[$a[0]][$t]=$a[2]+0.3;
-	    }
-	    #$shifts[$a[0]][$t]=0;   #Set all the shifts to 0.
+	    
 	}
 	$t++;
     }

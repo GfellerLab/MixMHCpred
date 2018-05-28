@@ -49,12 +49,14 @@ path to the MixMHCpred2.0/lib directory where you have installed the script
 
 5) To test your installation, make sure you are in the MixMHCpred2.0/ directory and run the command (should not take more than a few seconds):
 
-   ./MixMHCpred -i test/test.txt -o test/out.txt -a A0301,A2402,B1501,B3906,C0303,C0702
+   ./MixMHCpred -i test/test.fa -o test/out.txt -a A0101,A2501,B0801,B1801
 
 Your file out.txt should be the same as test/out_compare.txt, except for
 the fourth line that indicates the path of the input file and running
 the script should take less than 5 seconds.
-The test.fa file corresponds to the peptides found by MS in a meningioma sample (Gfeller et al BioRxiv 2018).
+The test.fa file corresponds to all possible neo-antigens (i.e.,
+9- and 10-mers containing one missense mutation) in Mel_5
+melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
 
 - Do not use spaces in your file or directory names.
 - Do not use other special characters (e.g., *, ?, %, &,...).
