@@ -14,7 +14,7 @@
 # If you use MixMHCpred2.0.1 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity  (2017).
 # and
-# Gfeller et al. Peptide length distribution and multiple specificity in naturally presented HLA-I ligands, bioRxiv (2018).
+# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, BioRxiv (2018).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
@@ -26,10 +26,11 @@ NEW FEATURES OF VERSION 2.0.1
 ########################
 
 - Modeling HLA-I specificity with multiple motifs.
-- Larger allele coverage (123 HLA-I alleles) based on manual curation of HLA-I motifs in pooled HLA peptidomics datasets, and inclusion of IEDB data for alleles not present in recent HLA peptidomics datasets.
+- Larger allele coverage (122 HLA-I alleles) based on manual curation of HLA-I motifs in pooled HLA peptidomics datasets, and inclusion of IEDB data for alleles not present in recent HLA peptidomics datasets.
 - Predictions for 8- to 14-mers.
 - Explicitly modeling peptide length distribution
 - Possibility to disregard cystein-containing peptides (option "-c 0", all peptides containing a Cystein are given a score of -100.0). Cysteine can create many issues in binding or immunogenicity assays. In addition it is poorly detected in many HLA peptidomics samples, and therefore is more difficult to accurately predict.
+- Most of these features are already available in version 2.0, and only a few minor changes occured in version 2.0.1.
 
 ############
 INSTALLATION
@@ -52,20 +53,20 @@ path to the MixMHCpred2.0.1/lib directory where you have installed the script
    ./MixMHCpred -i test/test.fa -o test/out.txt -a A0101,A2501,B0801,B1801
 
 Your file out.txt should be the same as test/out_compare.txt, except for
-the fourth line that indicates the path of the input file and running
-the script should take less than 5 seconds.
+the fourth line that indicates the path of the input file.
+Running the script should take only a few seconds.
 The test.fa file corresponds to all possible neo-antigens (i.e.,
 9- and 10-mers containing one missense mutation) in Mel_5
 melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
 
 - Do not use spaces in your file or directory names.
-- Do not use other special characters (e.g., *, ?, %, &,...).
+- Do not use other special characters (e.g., *, ?, %, &,...) in file or directory names.
 
 For Linux:
 
 After step 3), you also need to compile the MixMHCpred.cc code. Go to
 MixMHCpred2.0.1/lib and compile with your favorite C++ compiler
-(e.g. c++ MixMHCpred.cc -o MixMHCpred.x)
+(e.g. g++ -O3 MixMHCpred.cc -o MixMHCpred.x)
 
 
 
@@ -79,7 +80,7 @@ MixMHCpred -i input_file -o output_file -a allele1,allele2
 input_file:
 File listing all the peptides. Ideally a fasta file, but text files
 are supported and lines starting with ">" are skipped.
-All peptides should 9 or 10-mers.
+All peptides should between 8 and 14-mers.
 
 allele:
 HLA-I allele. Use the simple nomenclature like A0101.
@@ -113,16 +114,16 @@ OTHER INFORMATION
   This P-value is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). For a single allele, scores larger than 0 correspond to P-values smaller than 0.01.
   
 - The list of alleles is provided in MixMHCpred2.0.1/lib/allele_list.txt.
-  The third column indicates the number of motifs used to describe the specificity of a given allele
+  The third column indicates the number of motifs used to describe the specificity of a given allele and a given peptide length
   
 - The MixMHCpred2.0.1/tmp/ directory is used to store temporary files. Make
   sure there is no restriction for writing and reading files in this directory.
 
 - Predictions of Cystein containing peptides are less reliable due to the low detection rate of Cys in MS.
   Given that Cystein can create many experimental issues with binding and immunogenicity assays,
-  for practical applications, it can be useful to remove cysteine containing peptides from the list of peptides (-c 1).
+  for practical applications, it can be useful to remove cysteine containing peptides from the list of peptides (-c 0).
 
 - the lib/pwm/ folder contains the different PWMs for each allele and each length of ligands.
   The 6th line indicates the weight (differs than one for alleles modelled with multiple motifs),
   the number of unique ligands used to train the model and the origin of the data
-  (1: unfiltered and curated MS data; 2: IEDB_MS data; 3: IEDB_non_MS data; 0: extrapolation from other length). 
+  (1: unfiltered and curated MS data; 2: IEDB_MS data; 3: IEDB_non_MS data; 0: extrapolation from other lengths). 

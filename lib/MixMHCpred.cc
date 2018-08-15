@@ -494,13 +494,13 @@ void make_pred(){
     
     
     fprintf (pFile, "####################\n");
-    fprintf (pFile, "# Output from MixMHCpred (v2.0)\n");
+    fprintf (pFile, "# Output from MixMHCpred (v2.0.1)\n");
     fprintf (pFile, "# Alleles: %s",alleles[0]); for(int h=1; h<nh; h++){fprintf (pFile, ", %s", alleles[h]);} fprintf (pFile, "\n");
     fprintf (pFile, "# Input file: %s\n", input_file_original);
     fprintf (pFile, "# MixMHCpred is freely available for academic users.\n");
     fprintf (pFile, "# Private companies should contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
-    fprintf (pFile, "#\n# To cite MixMHCpred2.0, please refer to:\n");
-    fprintf (pFile, "# Gfeller et al. Peptide length distribution and multiple specificity in naturally presented HLA-I ligands (2018).\n");
+    fprintf (pFile, "#\n# To cite MixMHCpred2.0.1, please refer to:\n");
+    fprintf (pFile, "# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, BioRxiv (2018).\n");
     fprintf (pFile, "#\n");
     fprintf (pFile, "####################\n");
 
