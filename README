@@ -1,17 +1,17 @@
 
 ###############
-# MixMHCpred2.0 is a predictor of HLA-I ligand displayed at the cell surface.
+# MixMHCpred2.0.1 is a predictor of HLA-I ligand displayed at the cell surface.
 #
-# MixMHCpred2.0 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred2.0.1 can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
 # FOR-PROFIT USERS
-# If you plan to use MixMHCpred (version 2.0) or any data provided with the script in any for-profit
+# If you plan to use MixMHCpred (version 2.0.1) or any data provided with the script in any for-profit
 # application, you are required to obtain a separate  license.
 # To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
 #
-# If you use MixMHCpred2.0 in a publication, please cite:
+# If you use MixMHCpred2.0.1 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity  (2017).
 # and
 # Gfeller et al. Peptide length distribution and multiple specificity in naturally presented HLA-I ligands, bioRxiv (2018).
@@ -22,7 +22,7 @@
 ###############
 
 ########################
-NEW FEATURES OF VERSION 2.0
+NEW FEATURES OF VERSION 2.0.1
 ########################
 
 - Modeling HLA-I specificity with multiple motifs.
@@ -37,17 +37,17 @@ INSTALLATION
 
 For Mac and Linux:
 
-1) Dowload the MixMHCpred2.0.zip file and move it to a directory
+1) Dowload the MixMHCpred2.0.1.zip file and move it to a directory
 of your choice, where you have writing permissions.
 
-2) Unzip the MixMHCpred2.0.zip package.
+2) Unzip the MixMHCpred2.0.1.zip package.
 
 3) Open the MixMHCpred file and replace lib_path by the
-path to the MixMHCpred2.0/lib directory where you have installed the script
+path to the MixMHCpred2.0.1/lib directory where you have installed the script
 
-4) To run it from anywhere on your computer, add the MixMHCpred2.0. directory to your path.
+4) To run it from anywhere on your computer, add the MixMHCpred2.0.1. directory to your path.
 
-5) To test your installation, make sure you are in the MixMHCpred2.0/ directory and run the command (should not take more than a few seconds):
+5) To test your installation, make sure you are in the MixMHCpred2.0.1/ directory and run the command (should not take more than a few seconds):
 
    ./MixMHCpred -i test/test.fa -o test/out.txt -a A0101,A2501,B0801,B1801
 
@@ -64,7 +64,7 @@ melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
 For Linux:
 
 After step 3), you also need to compile the MixMHCpred.cc code. Go to
-MixMHCpred2.0/lib and compile with your favorite C++ compiler
+MixMHCpred2.0.1/lib and compile with your favorite C++ compiler
 (e.g. c++ MixMHCpred.cc -o MixMHCpred.x)
 
 
@@ -112,10 +112,10 @@ OTHER INFORMATION
   a random sampling of 700,000 peptides from the human proteome (8- to 14-mers).
   This P-value is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). For a single allele, scores larger than 0 correspond to P-values smaller than 0.01.
   
-- The list of alleles is provided in MixMHCpred2.0/lib/allele_list.txt.
+- The list of alleles is provided in MixMHCpred2.0.1/lib/allele_list.txt.
   The third column indicates the number of motifs used to describe the specificity of a given allele
   
-- The MixMHCpred2.0/tmp/ directory is used to store temporary files. Make
+- The MixMHCpred2.0.1/tmp/ directory is used to store temporary files. Make
   sure there is no restriction for writing and reading files in this directory.
 
 - Predictions of Cystein containing peptides are less reliable due to the low detection rate of Cys in MS.

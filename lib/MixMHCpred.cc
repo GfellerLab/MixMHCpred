@@ -5,7 +5,7 @@
 
  *For any question or commercial use, please ask david.gfeller@unil.ch
 
- *Copyright (2016) David Gfeller
+ *Copyright (2018) David Gfeller
  ****************/
 
 #include <stdio.h>      /* printf, fgets */

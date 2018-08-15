@@ -6,7 +6,7 @@
 
 # For any question or commercial use, please ask david.gfeller@unil.ch.
 
-# Copyright (2016) David Gfeller.
+# Copyright (2018) David Gfeller.
 ################
 
 use strict;
@@ -158,7 +158,10 @@ while($l=<IN>){
     foreach $h (@allele_list){
 	if($a[1] eq $h){
 	    $shifts[$a[0]][$t]=$a[2];
-	    
+	    if(substr($h, 0, 1) eq "C"){
+		#$shifts[$a[0]][$t]=$a[2]+0.3;
+	    }
+	    #$shifts[$a[0]][$t]=0;   #Set all the shifts to 0.
 	}
 	$t++;
     }
@@ -205,7 +208,7 @@ for(my $l=$Lmin; $l<=$Lmax; $l++){
     push @shifts_all, @{$shifts[$l]};
 }
 
-#print "$output_file $lib_dir $rd $input $cys $nh @allele_list @allele_pres @Nmotif_all @shifts_all\n";
+#print "$output_file\n";
 #die;
 
 

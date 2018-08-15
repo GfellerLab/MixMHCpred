@@ -15,7 +15,7 @@
 # If you use MixMHCpred2.0 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity  (2017).
 # and
-# Gfeller et al. Peptide length distribution and multiple specificity in naturally presented HLA-I ligands, bioRxiv (2018).
+# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, BioRxiv (2018).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
@@ -26,6 +26,7 @@
 # Make sure you are not using spaces or other special characters in your paths.
 lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
 
+#echo $lib_path
 
 if [[ "$lib_path" =~ " " ]]; then
     echo Spaces in path to MixMHCpred are not supported
