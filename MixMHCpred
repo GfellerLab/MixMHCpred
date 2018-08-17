@@ -97,9 +97,12 @@ fi
 
 #echo $cys
 
+output_file=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $output_file`;
+echo $output_file
 
 dir=$(pwd)
-output_file=$dir/$output_file
+
+#output_file=$dir/$output_file
 if [[ "$input" =~ " " ]]; then
     echo Spaces in output path are not supported
     exit 1;
