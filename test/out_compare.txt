@@ -9,7 +9,7 @@
 # Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, BioRxiv (2018).
 #
 ####################
-Peptide	Best_score	Best_allele	P-value	A0101	P-value	A2501	P-value	B0801	P-value	B1801	P-value
+Peptide	Score_bestAllele	BestAllele	Pval_bestAllele	Score_A0101	Pval_A0101	Score_A2501	Pval_A2501	Score_B0801	Pval_B0801	Score_B1801	Pval_B1801
 SPQCPVAQK	-0.528205	A2501	0.76	-0.676421	0.7	-0.528205	0.4	-0.583708	0.53	-0.647523	0.67
 PQCPVAQKG	-0.660129	A0101	0.92	-0.660129	0.68	-0.803957	0.8	-1.098999	0.97	-0.744957	0.83
 QCPVAQKGL	-0.436383	B0801	0.57	-0.644919	0.65	-0.508562	0.36	-0.436383	0.23	-0.859638	0.92
