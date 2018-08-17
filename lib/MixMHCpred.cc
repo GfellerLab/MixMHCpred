@@ -506,10 +506,10 @@ void make_pred(){
 
     fprintf (pFile, "Peptide\t");
     //fprintf (pFile, "Max_score\tMax_allele\tRanking\tP_val");
-    fprintf (pFile, "Best_score\tBest_allele\tP-value");
+    fprintf (pFile, "Score_bestAllele\tBestAllele\tPval_bestAllele");
     for(int h=0; h<nh; h++){
 	//fprintf (pFile, "\t%s\tRanking\tP_val", alleles[h]);
- 	fprintf (pFile, "\t%s\tP-value", alleles[h]);
+ 	fprintf (pFile, "\tScore_%s\tPval_%s", alleles[h], alleles[h]);
     }
     fprintf (pFile, "\n");
     
