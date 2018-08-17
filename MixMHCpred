@@ -24,8 +24,7 @@
 
 # Set the location here. This has to be manually done on your machine.
 # Make sure you are not using spaces or other special characters in your paths.
-#lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
-lib_path="/Users/davidgfeller/Research/LICR/Research/Immunopeptidomics/Full_package/MixMHCpred2.0.1/source/MixMHCpred2.0.1/lib"
+lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
 
 #echo $lib_path
 
@@ -60,7 +59,6 @@ END
 	exit 0;
 fi
 
-
 # Parse flags
 while [ $# -gt 0 ]; do
 	case $1 in
@@ -71,10 +69,6 @@ while [ $# -gt 0 ]; do
 		*) shift 1;;
 	esac
 done
-
-
-
-
 
 input=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $input`;
 if [[ "$input" =~ " " ]]; then
@@ -95,17 +89,7 @@ if [ ! -n "$cys" ]; then
     cys=1
 fi
 
-#echo $cys
-
 output_file=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $output_file`;
-echo $output_file
-
 dir=$(pwd)
-
-#output_file=$dir/$output_file
-if [[ "$input" =~ " " ]]; then
-    echo Spaces in output path are not supported
-    exit 1;
-fi
 
 perl $lib_path/run_MixMHCpred.pl --alleles $alleles --input $input --dir $dir --output $output_file --lib $lib_path --cys $cys
