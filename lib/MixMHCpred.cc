@@ -494,22 +494,22 @@ void make_pred(){
     
     
     fprintf (pFile, "####################\n");
-    fprintf (pFile, "# Output from MixMHCpred (v2.0.1)\n");
+    fprintf (pFile, "# Output from MixMHCpred (v2.0.2)\n");
     fprintf (pFile, "# Alleles: %s",alleles[0]); for(int h=1; h<nh; h++){fprintf (pFile, ", %s", alleles[h]);} fprintf (pFile, "\n");
     fprintf (pFile, "# Input file: %s\n", input_file_original);
     fprintf (pFile, "# MixMHCpred is freely available for academic users.\n");
     fprintf (pFile, "# Private companies should contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
-    fprintf (pFile, "#\n# To cite MixMHCpred2.0.1, please refer to:\n");
-    fprintf (pFile, "# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, BioRxiv (2018).\n");
-    fprintf (pFile, "#\n");
+    fprintf (pFile, "#\n# To cite MixMHCpred2.0.2, please refer to:\n");
+    fprintf (pFile, "# Bassani-Sternberg et al. Deciphering HLA-I motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).\n");
+    fprintf (pFile, "# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, J Immunol (2018).\n");
     fprintf (pFile, "####################\n");
 
     fprintf (pFile, "Peptide\t");
     //fprintf (pFile, "Max_score\tMax_allele\tRanking\tP_val");
-    fprintf (pFile, "Score_bestAllele\tBestAllele\tPval_bestAllele");
+    fprintf (pFile, "Score_bestAllele\tBestAllele\t%%Rank_bestAllele");
     for(int h=0; h<nh; h++){
 	//fprintf (pFile, "\t%s\tRanking\tP_val", alleles[h]);
- 	fprintf (pFile, "\tScore_%s\tPval_%s", alleles[h], alleles[h]);
+ 	fprintf (pFile, "\tScore_%s\t%%Rank_%s", alleles[h], alleles[h]);
     }
     fprintf (pFile, "\n");
     
@@ -533,7 +533,7 @@ void make_pred(){
 		    pval=P_val_bin[j];
 		}
 	    }
-	    fprintf (pFile, "\t%g", pval);
+	    fprintf (pFile, "\t%g", 100*pval);
 	} else {
 	    fprintf (pFile, "\tNA\tNA\tNA\t");
 	}
@@ -549,7 +549,7 @@ void make_pred(){
 			pval=P_val_bin[j];
 		    }
 		}
-		fprintf (pFile, "\t%g", pval);
+		fprintf (pFile, "\t%g", 100*pval);
 	    
 	    } else {
 		fprintf (pFile, "\tNA\tNA");

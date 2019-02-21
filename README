@@ -1,20 +1,20 @@
 
 ###############
-# MixMHCpred2.0.1 is a predictor of HLA-I ligand displayed at the cell surface.
+# MixMHCpred2.0.2 is a predictor of HLA-I ligand displayed at the cell surface.
 #
-# MixMHCpred2.0.1 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred2.0.2 can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
 # FOR-PROFIT USERS
-# If you plan to use MixMHCpred (version 2.0.1) or any data provided with the script in any for-profit
+# If you plan to use MixMHCpred (version 2.0.2) or any data provided with the script in any for-profit
 # application, you are required to obtain a separate  license.
 # To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
 #
-# If you use MixMHCpred2.0.1 in a publication, please cite:
-# Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity  (2017).
+# If you use MixMHCpred2.0.2 in a publication, please cite:
+# Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
 # and
-# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, BioRxiv (2018).
+# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, J Immunol (2018).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
@@ -22,15 +22,10 @@
 ###############
 
 ########################
-NEW FEATURES OF VERSION 2.0.1
+NEW FEATURES OF VERSION 2.0.2
 ########################
 
-- Modeling HLA-I specificity with multiple motifs.
-- Larger allele coverage (122 HLA-I alleles) based on manual curation of HLA-I motifs in pooled HLA peptidomics datasets, and inclusion of IEDB data for alleles not present in recent HLA peptidomics datasets.
-- Predictions for 8- to 14-mers.
-- Explicitly modeling peptide length distribution
-- Possibility to disregard cystein-containing peptides (option "-c 0", all peptides containing a Cystein are given a score of -100.0). Cysteine can create many issues in binding or immunogenicity assays. In addition it is poorly detected in many HLA peptidomics samples, and therefore is more difficult to accurately predict.
-- Most of these features are already available in version 2.0, and only a few minor changes occured in version 2.0.1.
+- Following common practices in NetMHCpan and MixMHC2pred, P-values have been replaced by %Rank (i.e., multiplied by 100). These values correspond to the fraction of random peptides of length 8 to 14 that have a score higher than the one of the peptide for predictions are done.
 
 ############
 INSTALLATION
@@ -38,17 +33,17 @@ INSTALLATION
 
 For Mac and Linux:
 
-1) Dowload the MixMHCpred2.0.1.zip file and move it to a directory
+1) Dowload the MixMHCpred2.0.2.zip file and move it to a directory
 of your choice, where you have writing permissions.
 
-2) Unzip the MixMHCpred2.0.1.zip package.
+2) Unzip the MixMHCpred2.0.2.zip package.
 
 3) Open the MixMHCpred file and replace lib_path by the
-path to the MixMHCpred2.0.1/lib directory where you have installed the script
+path to the MixMHCpred2.0.2/lib directory where you have installed the script
 
-4) To run it from anywhere on your computer, add the MixMHCpred2.0.1. directory to your path.
+4) To run it from anywhere on your computer, add the MixMHCpred2.0.2. directory to your path.
 
-5) To test your installation, make sure you are in the MixMHCpred2.0.1/ directory and run the command (should not take more than a few seconds):
+5) To test your installation, make sure you are in the MixMHCpred2.0.2/ directory and run the command (should not take more than a few seconds):
 
    ./MixMHCpred -i test/test.fa -o test/out.txt -a A0101,A2501,B0801,B1801
 
@@ -65,7 +60,7 @@ melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
 For Linux:
 
 After step 3), you also need to compile the MixMHCpred.cc code. Go to
-MixMHCpred2.0.1/lib and compile with your favorite C++ compiler
+MixMHCpred2.0.2/lib and compile with your favorite C++ compiler
 (e.g. g++ -O3 MixMHCpred.cc -o MixMHCpred.x)
 
 
@@ -113,10 +108,10 @@ OTHER INFORMATION
   a random sampling of 700,000 peptides from the human proteome (8- to 14-mers).
   This P-value is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). For a single allele, scores larger than 0 correspond to P-values smaller than 0.01.
   
-- The list of alleles is provided in MixMHCpred2.0.1/lib/allele_list.txt.
+- The list of alleles is provided in MixMHCpred2.0.2/lib/allele_list.txt.
   The third column indicates the number of motifs used to describe the specificity of a given allele and a given peptide length
   
-- The MixMHCpred2.0.1/tmp/ directory is used to store temporary files. Make
+- The MixMHCpred2.0.2/tmp/ directory is used to store temporary files. Make
   sure there is no restriction for writing and reading files in this directory.
 
 - Predictions of Cystein containing peptides are less reliable due to the low detection rate of Cys in MS.
@@ -126,4 +121,6 @@ OTHER INFORMATION
 - the lib/pwm/ folder contains the different PWMs for each allele and each length of ligands.
   The 6th line indicates the weight (differs than one for alleles modelled with multiple motifs),
   the number of unique ligands used to train the model and the origin of the data
-  (1: unfiltered and curated MS data; 2: IEDB_MS data; 3: IEDB_non_MS data; 0: extrapolation from other lengths). 
+  (1: unfiltered and curated MS data; 2: IEDB_MS data; 3: IEDB_non_MS data; 0: extrapolation from other lengths).
+
+- Predictions can be run for 8- to 14-mers. The length distribution obtained in MS data is explicitely incorporated in the scores of the peptides (see Gfeller et al., J Immunol 2018).
