@@ -1,11 +1,11 @@
 ####################
-# Output from MixMHCpred (v2.0.2)
+# Output from MixMHCpred (v2.1)
 # Alleles: A0101, A2501, B0801, B1801
-# Input file: /Users/davidgfeller/Research/LICR/Research/Immunopeptidomics/Full_package/MixMHCpred2.0.2/source/MixMHCpred2.0.2/test/test.fa
+# Input file: /Users/davidgfeller/Research/LICR/Research/Immunopeptidomics/Full_package/MixMHCpred2.1/source/MixMHCpred2.1/test/test.fa
 # MixMHCpred is freely available for academic users.
 # Private companies should contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for Cancer Research Ltd for commercial licenses.
 #
-# To cite MixMHCpred2.0.2, please refer to:
+# To cite MixMHCpred2.1, please refer to:
 # Bassani-Sternberg et al. Deciphering HLA-I motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
 # Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, J Immunol (2018).
 ####################

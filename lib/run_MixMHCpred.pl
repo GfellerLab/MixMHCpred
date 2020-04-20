@@ -121,12 +121,23 @@ foreach $p (@peptide){
 # Load information about the allelels
 #######################################
 
+my %pres=();
+my %maph=();
 
+open IN, "$lib_dir/alleles_mapping.txt", or die;
+while($l=<IN>){
+    $l =~ s/\r?\n$//;
+    my @a=split(' ', $l);
+    $maph{$a[0]}=$a[1];
+    $pres{$a[0]}=1;
+}
+close IN;
+
+  
 
 my @a=();
 my @Nmotif=([]); for(my $le=$Lmin; $le<=$Lmax; $le++){ for(my $i=0; $i<$nh; $i++){$Nmotif[$le][$i]=0;}}
 my @shifts=([]); for(my $le=$Lmin; $le<=$Lmax; $le++){ for(my $i=0; $i<$nh; $i++){$shifts[$le][$i]=0;}}
-my @allele_pres=(); for(my $i=0; $i<$nh; $i++){ $allele_pres[$i]=0; }
 
 my $t;
 my $cond=0;
@@ -137,12 +148,11 @@ while($l=<IN>){
     $l =~ s/\r?\n$//;
     chomp($l);
     @a=split("\t", $l);
+    $maph{$a[1]}=$a[1];
     $t=0;
     foreach $h (@allele_list){
-	if($a[1] eq $h){
-	    $Nmotif[$a[0]][$t]=$a[2];
-	    $allele_pres[$t]=1;
-	    $cond=1;
+	if($a[1] eq $maph{$h} ){
+	    $Nmotif[$a[0]][$t]=$a[2];   
 	}
 	$t++;
     }
@@ -156,7 +166,7 @@ while($l=<IN>){
     @a=split("\t", $l);
     $t=0;
     foreach $h (@allele_list){
-	if($a[1] eq $h){
+	if($a[1] eq $maph{$h}){
 	    $shifts[$a[0]][$t]=$a[2];
 	    if(substr($h, 0, 1) eq "C"){
 		#$shifts[$a[0]][$t]=$a[2]+0.3;
@@ -167,15 +177,22 @@ while($l=<IN>){
     }
 }
 
+
+
 ######################################
 # Stop if no predictions are available
 ######################################
 
+my @allele_list_map=();
+foreach $h (@allele_list){
 
-if( $cond==0 ){
-    print "Predictions are not available in MixMHCpred for any of your alleles...\n";
-    exit();
+    if(!exists $maph{$h}){
+	print "Predictions not available in MixMHCpred for $h...\n";
+	exit();
+    }
+    push @allele_list_map, $maph{$h};
 }
+
 
 #############
 # Print input peptides
@@ -208,11 +225,11 @@ for(my $l=$Lmin; $l<=$Lmax; $l++){
     push @shifts_all, @{$shifts[$l]};
 }
 
-#print "$output_file\n";
+#print "@allele_list\n@allele_list_map\n@Nmotif_all\n@shifts_all\n";
 #die;
 
 
-system("$lib_dir/MixMHCpred.x $output_file $lib_dir $rd $input $cys $nh @allele_list @allele_pres @Nmotif_all @shifts_all");
+system("$lib_dir/MixMHCpred.x $output_file $lib_dir $rd $input $cys $nh @allele_list @allele_list_map @Nmotif_all @shifts_all");
 
 if(-d "$lib_dir/../tmp/$rd"){
     system("rm -fr $lib_dir/../tmp/$rd/");

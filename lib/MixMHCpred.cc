@@ -52,7 +52,7 @@ double *P;
 double **P_allele;
 
 int nh;
-int *alleles_pres;
+char **alleles_map;
 int **Nmotifs;
 double **shifts;
 int **nc;
@@ -95,9 +95,10 @@ int main(int argc, char ** argv){
 	alleles[i]=new char[4096];
 	strcpy(alleles[i], argv[inc+i]);
     }
-    alleles_pres=new int[nh];
+    alleles_map=new char*[nh];
     for(int i=0; i<nh; i++){
-	alleles_pres[i]=atoi(argv[inc+nh+i]);
+	alleles_map[i]=new char[4096];
+	strcpy(alleles_map[i], argv[inc+nh+i]);
     }
 
     Nmotifs=new int*[Lmax];
@@ -207,27 +208,26 @@ void comp_Pval(){
 	    }
 	    if(score[t]==-1000){
 		for(int h=0; h<nh; h++){
-		    if(alleles_pres[h]==1){
-			tscore=0;
-			for(int c=0; c<Nmotifs[l][h]; c++){
-			    ttscore=1;
-			    for(int i=0; i<l; i++){
-				aa=rpep[l][n][i];
-				ttscore=ttscore*pwm[l][h][c][aa][i];
-			    }
-			    tscore=tscore+w[l][h][c]*ttscore;
+		    tscore=0;
+		    for(int c=0; c<Nmotifs[l][h]; c++){
+			ttscore=1;
+			for(int i=0; i<l; i++){
+			    aa=rpep[l][n][i];
+			    ttscore=ttscore*pwm[l][h][c][aa][i];
 			}
-			
-			tscore=log(tscore)/(l*1.0);
-			tscore=tscore-shifts[l][h];
-
-			score_allele[h][t]=tscore;
-			
-			if(tscore>score[t]){
-			    score[t]=tscore;
-			    pos=h;
-			}
+			tscore=tscore+w[l][h][c]*ttscore;
 		    }
+		    
+		    tscore=log(tscore)/(l*1.0);
+		    tscore=tscore-shifts[l][h];
+
+		    score_allele[h][t]=tscore;
+		    
+		    if(tscore>score[t]){
+			score[t]=tscore;
+			pos=h;
+		    }
+		    
 		}
 	    }
 	    t++;
@@ -312,33 +312,26 @@ void load_pwm(){
    
     for(int l=Lmin; l<Lmax; l++){
 	
-    
 	for(int h=0; h<nh; h++){
-	    if(alleles_pres[h]==1){
-		//Get the PWMs for the different motifs
-		
-		
-		for(int c=0; c<Nmotifs[l][h]; c++){
-		    sprintf(pwm_file, "%s/pwm/class1_%d/%s_%d.txt", lib_dir, l, alleles[h], c+1);
-		    myfile.open(pwm_file);
-		    for(int i=0; i<5; i++){
-			getline (myfile,line);
-		    }
-		    myfile >> w[l][h][c];
-		    myfile >> tmp;
-		    myfile >> tmp;
-		    for(int i=0; i<N; i++){
-			myfile >> line;
-			for(int j=0; j<l; j++){
-			    myfile >> pwm[l][h][c][i][j];
-			}
-		    }
-		    myfile.close();
+
+	    for(int c=0; c<Nmotifs[l][h]; c++){
+		sprintf(pwm_file, "%s/pwm/class1_%d/%s_%d.txt", lib_dir, l, alleles_map[h], c+1);
+		myfile.open(pwm_file);
+		for(int i=0; i<5; i++){
+		    getline (myfile,line);
 		}
+		myfile >> w[l][h][c];
+		myfile >> tmp;
+		myfile >> tmp;
+		for(int i=0; i<N; i++){
+		    myfile >> line;
+		    for(int j=0; j<l; j++){
+			myfile >> pwm[l][h][c][i][j];
+		    }
+		}
+		myfile.close();
 	    }
-	    else{
-		Nmotifs[l][h]=0;
-	    }
+	  
 	}
     
 	for(int h=0; h<nh; h++){
@@ -396,25 +389,23 @@ void make_pred(){
 	
 	if(max_score[i]==-1000){  // Either Cys are not excluded or the peptide does not contain a Cys
 	    for(int h=0; h<nh; h++){
-		if(alleles_pres[h]==1){
-		    score[h][i]=0;
-		    //cout<<Nmotifs[lg[i]][h]<<endl;
-		    for(int c=0; c<Nmotifs[lg[i]][h]; c++){
-			tscore=1;
-			for(int p=0; p<lg[i]; p++){
-			    aa=peptides[i][p];
-			    tscore=tscore*(pwm[lg[i]][h][c][aa][p]);
-			}
-			score[h][i]=score[h][i]+w[lg[i]][h][c]*tscore;
+		score[h][i]=0;
+		//cout<<Nmotifs[lg[i]][h]<<endl;
+		for(int c=0; c<Nmotifs[lg[i]][h]; c++){
+		    tscore=1;
+		    for(int p=0; p<lg[i]; p++){
+			aa=peptides[i][p];
+			tscore=tscore*(pwm[lg[i]][h][c][aa][p]);
 		    }
-		    //cout<<score[h][i]<<endl;
-		    score[h][i]=log(score[h][i])/lg[i];
-		    score[h][i]=score[h][i]-shifts[lg[i]][h];
+		    score[h][i]=score[h][i]+w[lg[i]][h][c]*tscore;
+		}
+		//cout<<score[h][i]<<endl;
+		score[h][i]=log(score[h][i])/lg[i];
+		score[h][i]=score[h][i]-shifts[lg[i]][h];
 
-		    if(score[h][i]>max_score[i]){
-			max_score[i]=score[h][i];
-			max_pos[i]=h;
-		    }
+		if(score[h][i]>max_score[i]){
+		    max_score[i]=score[h][i];
+		    max_pos[i]=h;
 		}
 	    }
 	}
@@ -423,68 +414,68 @@ void make_pred(){
     //Compute the ranks
     
     /* double *rank_all;
-    rank_all=new double[Np];
-    for(int i=0; i<Np; ++i)
-    {
-        rank_all[i] = max_score[i];
-    }
-    double *arrayofpointers[Np];
-    for(int i=0; i<Np; ++i)
-    {
-        arrayofpointers[i]=rank_all + i;
-    }
+       rank_all=new double[Np];
+       for(int i=0; i<Np; ++i)
+       {
+       rank_all[i] = max_score[i];
+       }
+       double *arrayofpointers[Np];
+       for(int i=0; i<Np; ++i)
+       {
+       arrayofpointers[i]=rank_all + i;
+       }
 
-    std::sort(arrayofpointers, arrayofpointers + Np, mycomparison());
+       std::sort(arrayofpointers, arrayofpointers + Np, mycomparison());
 
-    double temp2;
-    double temp1=*arrayofpointers[Np-1];
-    *arrayofpointers[Np-1]=Np;
+       double temp2;
+       double temp1=*arrayofpointers[Np-1];
+       *arrayofpointers[Np-1]=Np;
 
-    for(int i=Np-2; i>=0 ; i--)
-    {
-	temp2=*arrayofpointers[i];
-	if(*arrayofpointers[i]==temp1){
-	    *arrayofpointers[i]=*arrayofpointers[i+1];
-	} else {
-	    temp1=*arrayofpointers[i];
-	    *arrayofpointers[i] = i + 1;
-	}
-    }
+       for(int i=Np-2; i>=0 ; i--)
+       {
+       temp2=*arrayofpointers[i];
+       if(*arrayofpointers[i]==temp1){
+       *arrayofpointers[i]=*arrayofpointers[i+1];
+       } else {
+       temp1=*arrayofpointers[i];
+       *arrayofpointers[i] = i + 1;
+       }
+       }
 
-    //Compute the rank for each allele
+       //Compute the rank for each allele
 
-    double **rank;
-    rank=new double*[nh];
-    for(int h=0; h<nh; h++){
+       double **rank;
+       rank=new double*[nh];
+       for(int h=0; h<nh; h++){
 	
-	rank[h]=new double[Np];
-	for(int i=0; i<Np; ++i)
-	{
-	    rank[h][i] = score[h][i];
-	}
-	double *arrayofpointers[Np];
-	for(int i=0; i<Np; ++i)
-	{
-	    arrayofpointers[i]=rank[h] + i;
-	}
+       rank[h]=new double[Np];
+       for(int i=0; i<Np; ++i)
+       {
+       rank[h][i] = score[h][i];
+       }
+       double *arrayofpointers[Np];
+       for(int i=0; i<Np; ++i)
+       {
+       arrayofpointers[i]=rank[h] + i;
+       }
 	
-	std::sort(arrayofpointers, arrayofpointers + Np, mycomparison());
+       std::sort(arrayofpointers, arrayofpointers + Np, mycomparison());
 
-	double temp2;
-	double temp1=*arrayofpointers[Np-1];
-	*arrayofpointers[Np-1]=Np;
+       double temp2;
+       double temp1=*arrayofpointers[Np-1];
+       *arrayofpointers[Np-1]=Np;
 	
-	for(int i=Np-2; i>=0 ; i--)
-	{
-	    temp2=*arrayofpointers[i];
-	    if(*arrayofpointers[i]==temp1){
-		*arrayofpointers[i]=*arrayofpointers[i+1];
-	    } else {
-		temp1=*arrayofpointers[i];
-		*arrayofpointers[i] = i + 1;
-	    }
-	}
-    }
+       for(int i=Np-2; i>=0 ; i--)
+       {
+       temp2=*arrayofpointers[i];
+       if(*arrayofpointers[i]==temp1){
+       *arrayofpointers[i]=*arrayofpointers[i+1];
+       } else {
+       temp1=*arrayofpointers[i];
+       *arrayofpointers[i] = i + 1;
+       }
+       }
+       }
     
     */
     //Print the output
@@ -494,12 +485,12 @@ void make_pred(){
     
     
     fprintf (pFile, "####################\n");
-    fprintf (pFile, "# Output from MixMHCpred (v2.0.2)\n");
+    fprintf (pFile, "# Output from MixMHCpred (v2.1)\n");
     fprintf (pFile, "# Alleles: %s",alleles[0]); for(int h=1; h<nh; h++){fprintf (pFile, ", %s", alleles[h]);} fprintf (pFile, "\n");
     fprintf (pFile, "# Input file: %s\n", input_file_original);
     fprintf (pFile, "# MixMHCpred is freely available for academic users.\n");
     fprintf (pFile, "# Private companies should contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
-    fprintf (pFile, "#\n# To cite MixMHCpred2.0.2, please refer to:\n");
+    fprintf (pFile, "#\n# To cite MixMHCpred2.1, please refer to:\n");
     fprintf (pFile, "# Bassani-Sternberg et al. Deciphering HLA-I motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).\n");
     fprintf (pFile, "# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, J Immunol (2018).\n");
     fprintf (pFile, "####################\n");
@@ -538,22 +529,19 @@ void make_pred(){
 	    fprintf (pFile, "\tNA\tNA\tNA\t");
 	}
 	for(int h=0; h<nh; h++){
-	    if(alleles_pres[h]==1){
-		//fprintf (pFile, "\t%.6f\t%.0f", score[h][i], rank[h][i]);
-		fprintf (pFile, "\t%.6f", score[h][i]);
-		cond=0;
-		pval=1.0;
-		for(int j=0; j<NP_val && cond==0; j++){
-		    if(score[h][i] > P_allele[h][j]){
-			cond=1;
-			pval=P_val_bin[j];
-		    }
+	    //fprintf (pFile, "\t%.6f\t%.0f", score[h][i], rank[h][i]);
+	    fprintf (pFile, "\t%.6f", score[h][i]);
+	    cond=0;
+	    pval=1.0;
+	    for(int j=0; j<NP_val && cond==0; j++){
+		if(score[h][i] > P_allele[h][j]){
+		    cond=1;
+		    pval=P_val_bin[j];
 		}
-		fprintf (pFile, "\t%g", 100*pval);
-	    
-	    } else {
-		fprintf (pFile, "\tNA\tNA");
 	    }
+	    fprintf (pFile, "\t%g", 100*pval);
+	    
+	    
 	}
 	fprintf (pFile, "\n");
     }

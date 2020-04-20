@@ -1,18 +1,18 @@
 #!/bin/bash
 
 ###############
-# MixMHCpred2.0.2 is a predictor of HLA ligand displayed at the cell surface.
+# MixMHCpred2.1 is a predictor of HLA ligand displayed at the cell surface.
 #
-# MixMHCpred2.0.2 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred2.1 can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
 # FOR-PROFIT USERS
-# If you plan to use MixMHCpred (version 2.0.2) or any data provided with the script in any for-profit
+# If you plan to use MixMHCpred (version 2.1) or any data provided with the script in any for-profit
 # application, you are required to obtain a separate  license.
 # To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
 #
-# If you use MixMHCpred2.0.2 in a publication, please cite:
+# If you use MixMHCpred2.1 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
 # and
 # Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, J Immunol (2018).
@@ -43,7 +43,7 @@ usage="Usage: MixMHCpred -i INPUT_FILE -o OUTPUT_FILE -h LIST_OF_ALLELES"
 
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
 cat <<END
-MixMHCpred2.0.2
+MixMHCpred2.1
 $usage
 Mandatory parameters:
 
