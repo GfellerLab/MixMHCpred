@@ -121,7 +121,6 @@ foreach $p (@peptide){
 # Load information about the allelels
 #######################################
 
-my %pres=();
 my %maph=();
 
 open IN, "$lib_dir/alleles_mapping.txt", or die;
@@ -129,7 +128,6 @@ while($l=<IN>){
     $l =~ s/\r?\n$//;
     my @a=split(' ', $l);
     $maph{$a[0]}=$a[1];
-    $pres{$a[0]}=1;
 }
 close IN;
 
@@ -148,7 +146,6 @@ while($l=<IN>){
     $l =~ s/\r?\n$//;
     chomp($l);
     @a=split("\t", $l);
-    $maph{$a[1]}=$a[1];
     $t=0;
     foreach $h (@allele_list){
 	if($a[1] eq $maph{$h} ){
