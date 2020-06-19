@@ -89,6 +89,9 @@ if [ ! -n "$cys" ]; then
     cys=1
 fi
 
+echo "" > $output_file
+# Use this echo to pre-create te output_file because abs_path below doesn't work
+# on windows OS if the output_file doesn't already exist.
 output_file=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $output_file`;
 dir=$(pwd)
 

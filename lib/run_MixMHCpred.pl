@@ -11,6 +11,8 @@
 
 use strict;
 use Getopt::Long;
+use File::Basename qw( dirname );
+use File::Path qw( make_path );
 
 ###########
 # Run the MixMHCpred script
@@ -28,6 +30,9 @@ GetOptions ("alleles=s" => \$alleles,    # allele
  	    "cys=i"   => \$cys)      # Do not include Cystein containing peptides
     or die("Error in command line arguments\n");
 
+
+my $sep;
+$sep="/";
 
 ##########
 # Check allele name
@@ -123,7 +128,7 @@ foreach $p (@peptide){
 
 my %maph=();
 
-open IN, "$lib_dir/alleles_mapping.txt", or die;
+open IN, "$lib_dir$sep"."alleles_mapping.txt", or die;
 while($l=<IN>){
     $l =~ s/\r?\n$//;
     my @a=split(' ', $l);
@@ -140,7 +145,7 @@ my @shifts=([]); for(my $le=$Lmin; $le<=$Lmax; $le++){ for(my $i=0; $i<$nh; $i++
 my $t;
 my $cond=0;
 
-open IN, "$lib_dir/allele_list.txt", or die;
+open IN, "$lib_dir$sep"."allele_list.txt", or die;
 $l=<IN>;
 while($l=<IN>){
     $l =~ s/\r?\n$//;
@@ -156,7 +161,7 @@ while($l=<IN>){
 }
 close IN;
 
-open IN, "$lib_dir/shifts.txt", or die;
+open IN, "$lib_dir$sep"."shifts.txt", or die;
 while($l=<IN>){
     $l =~ s/\r?\n$//;
     chomp($l);
@@ -197,9 +202,10 @@ foreach $h (@allele_list){
 
 my $rd=int(rand(1000000));
 #$rd=101;
+my $tmp_dir=dirname($lib_dir)."${sep}temp$sep$rd";
+make_path($tmp_dir);
 
-system("mkdir -p $lib_dir/../tmp/$rd");
-open OUT, ">$lib_dir/../tmp/$rd/input.txt";
+open OUT, ">$tmp_dir${sep}input.txt";
 print OUT "$ct1\n";
 for(my $i=0; $i<$ct1; $i++){
     print OUT "$lg[$i] $peptide_num[$i][0]";
@@ -222,12 +228,19 @@ for(my $l=$Lmin; $l<=$Lmax; $l++){
     push @shifts_all, @{$shifts[$l]};
 }
 
-#print "@allele_list\n@allele_list_map\n@Nmotif_all\n@shifts_all\n";
-#die;
 
+########
+# Launch different executables depending on the operating system
+########
 
-system("$lib_dir/MixMHCpred.x $output_file $lib_dir $rd $input $cys $nh @allele_list @allele_list_map @Nmotif_all @shifts_all");
+my $sys=$^O;
 
-if(-d "$lib_dir/../tmp/$rd"){
-    system("rm -fr $lib_dir/../tmp/$rd/");
+if ($sys eq "MSWin32" || $sys eq "msys"){
+    system("$lib_dir$sep"."MixMHCpred.exe $output_file $lib_dir $rd $input $cys $nh @allele_list @allele_list_map @Nmotif_all @shifts_all");
+} else {
+    system("$lib_dir$sep"."MixMHCpred.x $output_file $lib_dir $rd $input $cys $nh @allele_list @allele_list_map @Nmotif_all @shifts_all");
+}
+
+if(-d "$tmp_dir"){
+    system("rm -fr $tmp_dir");
 }

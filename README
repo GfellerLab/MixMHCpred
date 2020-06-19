@@ -26,12 +26,13 @@ NEW FEATURES OF VERSION 2.1
 ########################
 
 - Expanded allelic coverage
+- Compatibility with Windows
 
 ############
 INSTALLATION
 ############
 
-For Mac and Linux:
+General pipeline (see below for specific steps on Linux and Windows):
 
 1) Dowload the MixMHCpred2.1.zip file and move it to a directory
 of your choice, where you have writing permissions.
@@ -63,7 +64,14 @@ After step 3), you also need to compile the MixMHCpred.cc code. Go to
 MixMHCpred2.1/lib and compile with your favorite C++ compiler
 (e.g. g++ -O3 MixMHCpred.cc -o MixMHCpred.x)
 
+For Windows:
 
+We provide a precompiled version of the C++ code. Should you have issues with it, try to recompile it with the command: g++ -O3 -static MixMHCpred.cc -o MixMHCpred.exe
+
+MixMHCpred is called through a bash script. So you need to have bash available on the Windows computers.
+If you don’t have one already, you could install git-bash for example, available here: https://gitforwindows.org/.
+
+If you prefer to use the cmd.exe or Powershell from Windows, you should instead use the command “sh MixMHCpred -i test/test.fa -o test/out.txt -a A0101,A2501,B0801,B1801" from within the root folder of MixMHCpred.
 
 ########
 RUNNING
@@ -99,19 +107,19 @@ OTHER INFORMATION
 
 - MixMHCpred is meant for scoring different peptides and prioritizing
   the most likely HLA-I ligands. As it is trained on naturally presented
-  peptides, it does not output a predicted affinity value, simply a score.
+  peptides, it does not output a predicted affinity value, simply a score and a %rank.
 
 - The score is computed for each allele provided in input, and the maximal score (column 2) is used to determine the most likely allele (column 3).
 
-- The P-value column shows how likely it is to have a peptide with a given
+- The %rank column shows how likely it is to have a peptide with a given
   score (or higer) for the set of alleles given in input. It is computed based on
   a random sampling of 700,000 peptides from the human proteome (8- to 14-mers).
-  This P-value is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). For a single allele, scores larger than 0 correspond to P-values smaller than 0.01.
+  This %rank is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). For a single allele, scores larger than 0 correspond to %rank smaller than 1%.
   
 - The list of alleles is provided in MixMHCpred2.1/lib/allele_list.txt.
   The third column indicates the number of motifs used to describe the specificity of a given allele and a given peptide length
   
-- The MixMHCpred2.1/tmp/ directory is used to store temporary files. Make
+- The MixMHCpred2.1/temp/ directory is used to store temporary files. Make
   sure there is no restriction for writing and reading files in this directory.
 
 - Predictions of Cystein containing peptides are less reliable due to the low detection rate of Cys in MS.

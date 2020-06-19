@@ -79,7 +79,7 @@ int main(int argc, char ** argv){
     strcpy(input_file_original, argv[4]);
     
     input_file=new char[4096];
-    sprintf(input_file, "%s/../tmp/%d/input.txt", lib_dir, rd);
+    sprintf(input_file, "%s/../temp/%d/input.txt", lib_dir, rd);
 
     cys=atoi(argv[5]);
     
@@ -390,7 +390,6 @@ void make_pred(){
 	if(max_score[i]==-1000){  // Either Cys are not excluded or the peptide does not contain a Cys
 	    for(int h=0; h<nh; h++){
 		score[h][i]=0;
-		//cout<<Nmotifs[lg[i]][h]<<endl;
 		for(int c=0; c<Nmotifs[lg[i]][h]; c++){
 		    tscore=1;
 		    for(int p=0; p<lg[i]; p++){
@@ -399,7 +398,6 @@ void make_pred(){
 		    }
 		    score[h][i]=score[h][i]+w[lg[i]][h][c]*tscore;
 		}
-		//cout<<score[h][i]<<endl;
 		score[h][i]=log(score[h][i])/lg[i];
 		score[h][i]=score[h][i]-shifts[lg[i]][h];
 
@@ -411,73 +409,7 @@ void make_pred(){
 	}
     }
      
-    //Compute the ranks
-    
-    /* double *rank_all;
-       rank_all=new double[Np];
-       for(int i=0; i<Np; ++i)
-       {
-       rank_all[i] = max_score[i];
-       }
-       double *arrayofpointers[Np];
-       for(int i=0; i<Np; ++i)
-       {
-       arrayofpointers[i]=rank_all + i;
-       }
-
-       std::sort(arrayofpointers, arrayofpointers + Np, mycomparison());
-
-       double temp2;
-       double temp1=*arrayofpointers[Np-1];
-       *arrayofpointers[Np-1]=Np;
-
-       for(int i=Np-2; i>=0 ; i--)
-       {
-       temp2=*arrayofpointers[i];
-       if(*arrayofpointers[i]==temp1){
-       *arrayofpointers[i]=*arrayofpointers[i+1];
-       } else {
-       temp1=*arrayofpointers[i];
-       *arrayofpointers[i] = i + 1;
-       }
-       }
-
-       //Compute the rank for each allele
-
-       double **rank;
-       rank=new double*[nh];
-       for(int h=0; h<nh; h++){
-	
-       rank[h]=new double[Np];
-       for(int i=0; i<Np; ++i)
-       {
-       rank[h][i] = score[h][i];
-       }
-       double *arrayofpointers[Np];
-       for(int i=0; i<Np; ++i)
-       {
-       arrayofpointers[i]=rank[h] + i;
-       }
-	
-       std::sort(arrayofpointers, arrayofpointers + Np, mycomparison());
-
-       double temp2;
-       double temp1=*arrayofpointers[Np-1];
-       *arrayofpointers[Np-1]=Np;
-	
-       for(int i=Np-2; i>=0 ; i--)
-       {
-       temp2=*arrayofpointers[i];
-       if(*arrayofpointers[i]==temp1){
-       *arrayofpointers[i]=*arrayofpointers[i+1];
-       } else {
-       temp1=*arrayofpointers[i];
-       *arrayofpointers[i] = i + 1;
-       }
-       }
-       }
-    
-    */
+   
     //Print the output
     
     FILE *pFile;
@@ -529,7 +461,6 @@ void make_pred(){
 	    fprintf (pFile, "\tNA\tNA\tNA\t");
 	}
 	for(int h=0; h<nh; h++){
-	    //fprintf (pFile, "\t%.6f\t%.0f", score[h][i], rank[h][i]);
 	    fprintf (pFile, "\t%.6f", score[h][i]);
 	    cond=0;
 	    pval=1.0;
