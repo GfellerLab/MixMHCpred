@@ -110,25 +110,20 @@ OTHER INFORMATION
   the most likely HLA-I ligands. As it is trained on naturally presented
   peptides, it does not output a predicted affinity value, simply a score.
 
-- The score is computed for each allele provided in input, and the maximal score (column 2) is used to determine the most likely allele (column 3).
+- The score and %rank are computed for each allele provided in input, and the lowest %rank (column 4) is used to determine the most likely allele (column 3).
 
-- The %rank column shows how likely it is to have a peptide with a given
+- The %rank column shows the probability to have by chance a peptide with a given
   score (or higer) for each allele given in input. It is computed based on
   a random sampling of 700,000 peptides from the human proteome (8- to 14-mers).
-  This %rank is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). Scores larger than 0 correspond to %rank smaller than 0.1%.
+  The %rank should be used to rank peptides.
   
-- The list of alleles is provided in MixMHCpred2.2/lib/allele_list.txt.
-  The third column indicates the number of motifs used to describe the specificity of a given allele and a given peptide length
-  
+- MixMHCpred can be run with almost 400 human HLA-I alleles.
+
 - The MixMHCpred2.2/temp/ directory is used to store temporary files. Make
   sure there is no restriction for writing and reading files in this directory.
-
-- Predictions of Cystein containing peptides are less reliable due to the low detection rate of Cys in MS.
-  Given that Cystein can create many experimental issues with binding and immunogenicity assays,
-  for practical applications, it can be useful to remove cysteine containing peptides from the list of peptides (-c 0).
 
 - the lib/pwm/ folder contains the different PWMs for each allele and each length of ligands.
   The 6th line indicates the weight (differs than one for alleles modelled with multiple motifs),
   the number of unique ligands used to train the model.
 
-- Predictions can be run for 8- to 14-mers. The length distribution obtained in MS data is explicitely incorporated in the scores of the peptides (see Gfeller et al., BioRxiv 2022).
+- Predictions can be run for 8- to 14-mers.
