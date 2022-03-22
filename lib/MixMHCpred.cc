@@ -5,7 +5,7 @@
 
  *For any question or commercial use, please ask david.gfeller@unil.ch
 
- *Copyright (2018) David Gfeller
+ *Copyright (2022) David Gfeller
  ****************/
 
 #include <stdio.h>      /* printf, fgets */
@@ -31,13 +31,12 @@ void load_pwm();
 
 void make_pred();
 
-void comp_Pval();
+void load_Pval();
 
 int N;
 int **peptides;
 int *lg;
 int Np;  // Number of peptide
-int cys;
 char *output_file;
 char *lib_dir;
 char *input_file;
@@ -46,16 +45,17 @@ char **alleles;
 int rd;  //Random number for temporary output
 double *****pwm;
 double ***w;
-double *P_val_bin;
-int NP_val; // Number of P_values used.
-double *P;
-double **P_allele;
 
 int nh;
 char **alleles_map;
 int **Nmotifs;
 double **shifts;
+double **shifts_sd;
 int **nc;
+double **rank_val;
+double **rank_thr;
+int Nthr;
+double **min_rank;
 
 int Cmax;
 int Lmax; //Maximum length of peptides + 1
@@ -63,7 +63,7 @@ int Lmin;
 
 int main(int argc, char ** argv){
 
-    int inc=7;
+    int inc=6;
     Lmax=15;
     Lmin=8;
     
@@ -80,27 +80,22 @@ int main(int argc, char ** argv){
     
     input_file=new char[4096];
     sprintf(input_file, "%s/../temp/%d/input.txt", lib_dir, rd);
-
-    cys=atoi(argv[5]);
     
-    nh=atoi(argv[6]);
+    nh=atoi(argv[5]);
 
-    //cout<<nh<<" HLA alleles"<<endl;
-    if(cys==0){
-	cout<<"Cystein containing peptides are disregarded\n";
-    }
-    
     alleles=new char*[nh];
     for(int i=0; i<nh; i++){
 	alleles[i]=new char[4096];
 	strcpy(alleles[i], argv[inc+i]);
     }
+    
     alleles_map=new char*[nh];
     for(int i=0; i<nh; i++){
 	alleles_map[i]=new char[4096];
 	strcpy(alleles_map[i], argv[inc+nh+i]);
     }
 
+    
     Nmotifs=new int*[Lmax];
     for(int l=Lmin; l<Lmax; l++){
 	Nmotifs[l]=new int[nh];
@@ -108,7 +103,7 @@ int main(int argc, char ** argv){
 	    Nmotifs[l][i]=atoi(argv[inc+(l-Lmin+2)*nh+i]);
 	}
     }
-
+    
     shifts=new double*[Lmax];
     for(int l=Lmin; l<Lmax; l++){
 	shifts[l]=new double[nh];
@@ -116,12 +111,51 @@ int main(int argc, char ** argv){
 	    shifts[l][i]=atof(argv[inc+(l-Lmin+2+Lmax-Lmin)*nh+i]);
 	}
     }
+
+    shifts_sd=new double*[Lmax];
+    for(int l=Lmin; l<Lmax; l++){
+	shifts_sd[l]=new double[nh];
+	for(int i=0; i<nh; i++){
+	  shifts_sd[l][i]=atof(argv[inc+(l-Lmin+2+2*(Lmax-Lmin))*nh+i]);
+	}
+    }
+    
+    //Read the number of thresholds
+    char file [4096];
+    string nada="";
+    sprintf(file, "%s/PerRank/A0201.txt",  lib_dir);
+    string line;
+    ifstream myfile (file);
+    if (myfile.is_open()) {
+	Nthr=0;
+	while (! myfile.eof() ) {
+	    getline (myfile,line);
+	    if(line.compare(nada) != 0) {
+		Nthr++;
+	    }
+	}
+	myfile.close();
+    } else {
+	cout << "Unable to open file: " << file << endl;
+	exit(2);
+    }
+    
+    rank_val=new double*[nh];
+    for(int i=0; i<nh; i++){
+	rank_val[i]=new double[Nthr];
+    }
+    
+    rank_thr=new double*[nh];
+    for(int i=0; i<nh; i++){
+	rank_thr[i]=new double[Nthr];
+    }
     
     load_peptides();
 
     load_pwm();
     
-    comp_Pval();
+    load_Pval();
+    //comp_Pval();
     
     make_pred();
     
@@ -129,128 +163,26 @@ int main(int argc, char ** argv){
     
 }
 
-
-void comp_Pval(){
+//Load the %rank corresponding to different scores.
+void load_Pval(){
 
     fstream afile;
-    
-    int Nr=100000;
-       
-    N=20;
-    char *letter;
-    letter=new char[N+1];
-    strcpy(letter, "ACDEFGHIKLMNPQRSTVWY");
-    
-    NP_val=117;
-    
-    P=new double[NP_val];
-    P_allele=new double*[nh];
-    for(int h=0; h<nh; h++){
-	P_allele[h]=new double[NP_val];
-    }
-    
-    //Define the intervals
-    P_val_bin=new double[NP_val];
-    for(int i=0; i<9; i++){
-	P_val_bin[i]=0.0001+0.0001*i;
-    }
-    for(int i=9; i<18; i++){
-	P_val_bin[i]=0.001+0.001*(i-9);
-    }
-    for(int i=18; i<NP_val; i++){
-	P_val_bin[i]=0.01+0.01*(i-18);
-    }
-    
-    int ***rpep;
-    rpep=new int**[Lmax];
+
     char *rfile;
     rfile=new char[4096];
-
-    for(int l=Lmin; l<Lmax; l++){
-	rpep[l]=new int*[Nr];
-	//Open the random peptides.
-	sprintf(rfile, "%s/rand%d.txt", lib_dir, l);
+    
+    for(int i=0; i<nh; i++){
+	sprintf(rfile, "%s/PerRank/%s.txt", lib_dir, alleles_map[i]);
 	afile.open(rfile, ios::in);
-	for(int n=0; n<Nr; n++){
-	    rpep[l][n]=new int[l];
-	    for(int i=0; i<l; i++){
-		afile>>rpep[l][n][i];
-	    }
+	for(int j=0; j<Nthr; j++){
+	    afile>>rank_val[i][j];
+	    rank_val[i][j]=log(rank_val[i][j]);
+	    afile>>rank_thr[i][j];
 	}
 	afile.close();
     }
-    
-    double *score;
-    score=new double[(Lmax-Lmin)*Nr];
-
-    double **score_allele;
-    score_allele=new double*[nh];
-    for(int i=0; i<nh; i++){
-	score_allele[i]=new double[(Lmax-Lmin)*Nr];
-    }
-    
-    double tscore;
-    double ttscore;
-    int aa;
-    int pos;
-    int t=0;
-    
-    //Compute the scores
-    for(int l=Lmin; l<Lmax; l++){
-	for(int n=0; n<Nr; n++){
-	    score[t]=-1000;
-	    if(cys==0){
-		for(int i=0; i<l; i++){
-		    if(rpep[l][n][i]==1){
-			score[t]=-100;
-		    }
-		}
-	    }
-	    if(score[t]==-1000){
-		for(int h=0; h<nh; h++){
-		    tscore=0;
-		    for(int c=0; c<Nmotifs[l][h]; c++){
-			ttscore=1;
-			for(int i=0; i<l; i++){
-			    aa=rpep[l][n][i];
-			    ttscore=ttscore*pwm[l][h][c][aa][i];
-			}
-			tscore=tscore+w[l][h][c]*ttscore;
-		    }
-		    
-		    tscore=log(tscore)/(l*1.0);
-		    tscore=tscore-shifts[l][h];
-
-		    score_allele[h][t]=tscore;
-		    
-		    if(tscore>score[t]){
-			score[t]=tscore;
-			pos=h;
-		    }
-		    
-		}
-	    }
-	    t++;
-	}
-    }
-    //Sort the scores
-    std::sort(score, score + Nr*(Lmax-Lmin));
-    for(int i=0; i<nh; i++){
-	std::sort(score_allele[i], score_allele[i] + Nr*(Lmax-Lmin));
-    }
-    
-    //Compute the ranks
-    for(int n=0; n<NP_val; n++){
-	P[n]=score[Nr*(Lmax-Lmin)-1-int(Nr*(Lmax-Lmin)*P_val_bin[n])];
-    }
-
-    for(int i=0; i<nh; i++){
-	for(int n=0; n<NP_val; n++){
-	    P_allele[i][n]=score_allele[i][Nr*(Lmax-Lmin)-1-int(Nr*(Lmax-Lmin)*P_val_bin[n])];
-	}
-    }
-        
 }
+
 
 
 void load_peptides(){
@@ -261,8 +193,6 @@ void load_peptides(){
     fstream afile;
     afile.open(input_file, ios::in);
     afile>>Np;
-
-    //cout<<"A "<<Np<<endl;
     
     peptides=new int*[Np];
     lg=new int[Np]; 
@@ -275,7 +205,7 @@ void load_peptides(){
 	}
     }
     afile.close();
-    
+
 }
 
 void load_pwm(){
@@ -309,11 +239,13 @@ void load_pwm(){
     double t;
     
     pwm_file=new char[4096];
-   
+
+    
+    
     for(int l=Lmin; l<Lmax; l++){
 	
 	for(int h=0; h<nh; h++){
-
+    
 	    for(int c=0; c<Nmotifs[l][h]; c++){
 		sprintf(pwm_file, "%s/pwm/class1_%d/%s_%d.txt", lib_dir, l, alleles_map[h], c+1);
 		myfile.open(pwm_file);
@@ -321,7 +253,6 @@ void load_pwm(){
 		    getline (myfile,line);
 		}
 		myfile >> w[l][h][c];
-		myfile >> tmp;
 		myfile >> tmp;
 		for(int i=0; i<N; i++){
 		    myfile >> line;
@@ -358,58 +289,57 @@ void make_pred(){
     for(int h=0; h<nh; h++){
 	score[h]=new double[Np];
     }
-    double tscore;
+    double **rank;
+    rank=new double*[nh];
+    for(int h=0; h<nh; h++){
+	rank[h]=new double[Np];
+    }
+
+    int best_pos;
+    double best_rank;
+    int cond;
     
-    double *max_score;
-    max_score=new double[Np];
-
-    int *max_pos;
-    max_pos=new int[Np];
-
+    double tscore;
+    double min_score=-100;
     double ttscore;
     
     //Compute the scores
     int aa;
     for(int i=0; i<Np; i++){
-	
-	max_score[i]=-1000;
-	max_pos[i]=-1;
 
-	if(cys==0){
-	    for(int p=0; p<lg[i]; p++){
-		if(peptides[i][p]==1){
-		    max_score[i]=-100;
-		    max_pos[i]=0;
-		    for(int h=0; h<nh; h++){
-			score[h][i]=-100;
-		    }
+	for(int h=0; h<nh; h++){
+	    score[h][i]=0;
+	    
+	    for(int c=0; c<Nmotifs[lg[i]][h]; c++){
+		tscore=1;
+		for(int p=0; p<lg[i]; p++){
+		    aa=peptides[i][p];
+		    tscore=tscore*(pwm[lg[i]][h][c][aa][p]);
 		}
+		score[h][i]=score[h][i]+w[lg[i]][h][c]*tscore;
 	    }
-	}
-	
-	if(max_score[i]==-1000){  // Either Cys are not excluded or the peptide does not contain a Cys
-	    for(int h=0; h<nh; h++){
-		score[h][i]=0;
-		for(int c=0; c<Nmotifs[lg[i]][h]; c++){
-		    tscore=1;
-		    for(int p=0; p<lg[i]; p++){
-			aa=peptides[i][p];
-			tscore=tscore*(pwm[lg[i]][h][c][aa][p]);
+	    score[h][i]=log(score[h][i])/lg[i];
+	    score[h][i]=(score[h][i]-shifts[lg[i]][h])/shifts_sd[lg[i]][h];
+		
+	    //Now compute the ranks
+	    if(score[h][i]>=rank_thr[h][0]){
+		rank[h][i]=exp(rank_val[h][0]);
+	    } else if(score[h][i]<=rank_thr[h][Nthr-1]){
+		rank[h][i]=100;
+	    } else  {
+		//Do the extrapolation between bins of ranks
+		cond=1;
+		for(int j=1; j<Nthr && cond==1; j++){
+		    if(score[h][i]>=rank_thr[h][j]){
+			rank[h][i]=exp(rank_val[h][j-1]+(rank_val[h][j]-rank_val[h][j-1])/(rank_thr[h][j]-rank_thr[h][j-1])*(score[h][i]-rank_thr[h][j-1]));
+			cond=0;
 		    }
-		    score[h][i]=score[h][i]+w[lg[i]][h][c]*tscore;
-		}
-		score[h][i]=log(score[h][i])/lg[i];
-		score[h][i]=score[h][i]-shifts[lg[i]][h];
-
-		if(score[h][i]>max_score[i]){
-		    max_score[i]=score[h][i];
-		    max_pos[i]=h;
 		}
 	    }
 	}
     }
      
-   
+  
     //Print the output
     
     FILE *pFile;
@@ -417,63 +347,55 @@ void make_pred(){
     
     
     fprintf (pFile, "####################\n");
-    fprintf (pFile, "# Output from MixMHCpred (v2.1)\n");
+    fprintf (pFile, "# Output from MixMHCpred (v2.2)\n");
     fprintf (pFile, "# Alleles: %s",alleles[0]); for(int h=1; h<nh; h++){fprintf (pFile, ", %s", alleles[h]);} fprintf (pFile, "\n");
     fprintf (pFile, "# Input file: %s\n", input_file_original);
     fprintf (pFile, "# MixMHCpred is freely available for academic users.\n");
     fprintf (pFile, "# Private companies should contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
-    fprintf (pFile, "#\n# To cite MixMHCpred2.1, please refer to:\n");
-    fprintf (pFile, "# Bassani-Sternberg et al. Deciphering HLA-I motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).\n");
-    fprintf (pFile, "# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, J Immunol (2018).\n");
+    fprintf (pFile, "#\n# To cite MixMHCpred2.2, please refer to:\n");
+    fprintf (pFile, "# Gfeller et al. Improved predicitons of immunogenicity reveal SARS-COV2 CD8 T-cell epitopes, BioRxiv (2022).\n");
+    fprintf (pFile, "# \n");
     fprintf (pFile, "####################\n");
 
     fprintf (pFile, "Peptide\t");
-    //fprintf (pFile, "Max_score\tMax_allele\tRanking\tP_val");
     fprintf (pFile, "Score_bestAllele\tBestAllele\t%%Rank_bestAllele");
     for(int h=0; h<nh; h++){
-	//fprintf (pFile, "\t%s\tRanking\tP_val", alleles[h]);
  	fprintf (pFile, "\tScore_%s\t%%Rank_%s", alleles[h], alleles[h]);
     }
     fprintf (pFile, "\n");
     
-    int cond;
     double pval;
 
     for(int i=0; i<Np; i++){
 	for(int p=0; p<lg[i]; p++){
 	    fprintf (pFile, "%c", letter[peptides[i][p]]);
 	}
-	
-	if(max_score[i] > -10000){
-	    fprintf (pFile, "\t%.6f\t", max_score[i]);
-	    //fprintf (pFile, "%s\t%.0f", alleles[max_pos[i]], rank_all[i]);
-	    fprintf (pFile, "%s", alleles[max_pos[i]]);
-	    cond=0;
-	    pval=1.0;
-	    for(int j=0; j<NP_val && cond==0; j++){
-		if(max_score[i] > P[j]){
-		    cond=1;
-		    pval=P_val_bin[j];
-		}
+
+	//Find the allele with the best %rank
+	best_pos=-1;
+	best_rank=101;
+	for(int h=0; h<nh; h++){
+	    if(best_rank>rank[h][i] && score[h][i] > min_score){
+		best_rank=rank[h][i];
+		best_pos=h;
 	    }
-	    fprintf (pFile, "\t%g", 100*pval);
+	}
+	
+	if(best_pos > -1){
+	    fprintf (pFile, "\t%.6f\t", score[best_pos][i]);
+	    fprintf (pFile, "%s", alleles[best_pos]);
+	    fprintf (pFile, "\t%g", rank[best_pos][i]);
+	    for(int h=0; h<nh; h++){
+		fprintf (pFile, "\t%.6f", score[h][i]);
+		fprintf (pFile, "\t%g", rank[h][i]);
+	    }
 	} else {
 	    fprintf (pFile, "\tNA\tNA\tNA\t");
-	}
-	for(int h=0; h<nh; h++){
-	    fprintf (pFile, "\t%.6f", score[h][i]);
-	    cond=0;
-	    pval=1.0;
-	    for(int j=0; j<NP_val && cond==0; j++){
-		if(score[h][i] > P_allele[h][j]){
-		    cond=1;
-		    pval=P_val_bin[j];
-		}
+	    for(int h=0; h<nh; h++){
+		fprintf (pFile, "\tNA\tNA");
 	    }
-	    fprintf (pFile, "\t%g", 100*pval);
-	    
-	    
 	}
+	
 	fprintf (pFile, "\n");
     }
     fclose (pFile);

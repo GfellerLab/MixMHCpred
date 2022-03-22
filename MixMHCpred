@@ -1,25 +1,25 @@
 #!/bin/bash
 
 ###############
-# MixMHCpred2.1 is a predictor of HLA ligand displayed at the cell surface.
+# MixMHCpred2.2 is a predictor of HLA ligand displayed at the cell surface.
 #
-# MixMHCpred2.1 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred2.2 can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
 # FOR-PROFIT USERS
-# If you plan to use MixMHCpred (version 2.1) or any data provided with the script in any for-profit
+# If you plan to use MixMHCpred (version 2.2) or any data provided with the script in any for-profit
 # application, you are required to obtain a separate  license.
-# To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
+# To do so, please contact eauffarth@licr.org at the Ludwig Institute for Cancer Research Ltd.
 #
-# If you use MixMHCpred2.1 in a publication, please cite:
+# If you use MixMHCpred2.2 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
 # and
-# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, J Immunol (2018).
+# Gfeller et al. Improved predicitons of immunogenicity reveal SARS-COV2 CD8 T-cell epitopes, BioRxiv (2022).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
-# Copyright (2018) David Gfeller
+# Copyright (2022) David Gfeller
 ###############
 
 # Set the location here. This has to be manually done on your machine.
@@ -41,19 +41,17 @@ fi
 
 usage="Usage: MixMHCpred -i INPUT_FILE -o OUTPUT_FILE -h LIST_OF_ALLELES"
 
+
+# Make sure the first line of the -h output is the version (used in PRIME)
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
 cat <<END
-MixMHCpred2.1
+MixMHCpred2.2
 $usage
 Mandatory parameters:
 
   -i, --input             Absolute or relative path to the input file (fasta format or list of peptides)
   -o, --output            Name of the output file
   -a, --alleles           List of HLA alleles separated by commas (e.g., A0301,A2402,B1501,B3906,C0303,C0702)
-
-Optional parameters:
-
-  -c, --cysteine          Option to exclude Cystein containing peptides (-c 0). Default is to keep them (-c 1)
 
 END
 	exit 0;
@@ -65,7 +63,6 @@ while [ $# -gt 0 ]; do
 		-i | --input) input=$2; shift 2;;
 		-o | --output) output_file=$2; shift 2;;
 		-a | --allele) alleles=$2; shift 2;;
-		-c | --cysteine) cys=$2; shift 2;;
 		*) shift 1;;
 	esac
 done
@@ -85,14 +82,9 @@ if [ ! -n "$alleles" ]; then
 	exit 1;
 fi
 
-if [ ! -n "$cys" ]; then
-    cys=1
-fi
 
 echo "" > $output_file
-# Use this echo to pre-create te output_file because abs_path below doesn't work
-# on windows OS if the output_file doesn't already exist.
 output_file=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $output_file`;
 dir=$(pwd)
 
-perl $lib_path/run_MixMHCpred.pl --alleles $alleles --input $input --dir $dir --output $output_file --lib $lib_path --cys $cys
+perl $lib_path/run_MixMHCpred.pl --alleles $alleles --input $input --dir $dir --output $output_file --lib $lib_path

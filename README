@@ -1,32 +1,34 @@
 
 ###############
-# MixMHCpred2.1 is a predictor of HLA-I ligand displayed at the cell surface.
+# MixMHCpred2.2 is a predictor of HLA-I ligand displayed at the cell surface.
 #
-# MixMHCpred2.1 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred2.2 can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
 # FOR-PROFIT USERS
-# If you plan to use MixMHCpred (version 2.1) or any data provided with the script in any for-profit
+# If you plan to use MixMHCpred (version 2.2) or any data provided with the script in any for-profit
 # application, you are required to obtain a separate  license.
 # To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
 #
-# If you use MixMHCpred2.1 in a publication, please cite:
+# If you use MixMHCpred2.2 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
 # and
-# Gfeller et al. The length distribution and multiple specificity of naturally presented HLA-I ligands, J Immunol (2018).
+# Gfeller et al. Improved predicitons of immunogenicity reveal SARS-COV2 CD8 T-cell epitopes, BioRxiv (2022).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
-# Copyright (2018) David Gfeller
+# Copyright (2022) David Gfeller
 ###############
 
 ########################
-NEW FEATURES OF VERSION 2.1
+NEW FEATURES OF VERSION 2.2
 ########################
 
-- Expanded allelic coverage
-- Compatibility with Windows
+- Improved modelling of peptide length distributions.
+- Expanded training set from new HLA peptidomics studies.
+- No fixed bins to compute %rank
+- Improved efficiency. 
 
 ############
 INSTALLATION
@@ -34,17 +36,17 @@ INSTALLATION
 
 General pipeline (see below for specific steps on Linux and Windows):
 
-1) Dowload the MixMHCpred2.1.zip file and move it to a directory
+1) Dowload the MixMHCpred2.2.zip file and move it to a directory
 of your choice, where you have writing permissions.
 
-2) Unzip the MixMHCpred2.1.zip package.
+2) Unzip the MixMHCpred2.2.zip package.
 
 3) Open the MixMHCpred file and replace lib_path by the
-path to the MixMHCpred2.1/lib directory where you have installed the script
+path to the MixMHCpred2.2/lib directory where you have installed the script
 
-4) To run it from anywhere on your computer, add the MixMHCpred2.1. directory to your path.
+4) To run it from anywhere on your computer, add the MixMHCpred2.2. directory to your path.
 
-5) To test your installation, make sure you are in the MixMHCpred2.1/ directory and run the command (should not take more than a few seconds):
+5) To test your installation, make sure you are in the MixMHCpred2.2/ directory and run the command (should not take more than a few seconds):
 
    ./MixMHCpred -i test/test.fa -o test/out.txt -a A0101,A2501,B0801,B1801
 
@@ -61,17 +63,19 @@ melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
 For Linux:
 
 After step 3), you also need to compile the MixMHCpred.cc code. Go to
-MixMHCpred2.1/lib and compile with your favorite C++ compiler
+MixMHCpred2.2/lib and compile with your favorite C++ compiler
 (e.g. g++ -O3 MixMHCpred.cc -o MixMHCpred.x)
 
 For Windows:
 
-We provide a precompiled version of the C++ code. Should you have issues with it, try to recompile it with the command: g++ -O3 -static MixMHCpred.cc -o MixMHCpred.exe
+We provide a precompiled version of the C++ code. Should you have issues with it, try to recompile it on a Windows machine with the command: g++ -O3 -static MixMHCpred.cc -o MixMHCpred.exe
 
 MixMHCpred is called through a bash script. So you need to have bash available on the Windows computers.
 If you don’t have one already, you could install git-bash for example, available here: https://gitforwindows.org/.
 
 If you prefer to use the cmd.exe or Powershell from Windows, you should instead use the command “sh MixMHCpred -i test/test.fa -o test/out.txt -a A0101,A2501,B0801,B1801" from within the root folder of MixMHCpred.
+
+
 
 ########
 RUNNING
@@ -80,23 +84,20 @@ RUNNING
 Command:
 MixMHCpred -i input_file -o output_file -a allele1,allele2
 
-input_file:
-File listing all the peptides. Ideally a fasta file, but text files
+-i input_file:
+File listing all the peptides. Ideally a text file, but fasta files
 are supported and lines starting with ">" are skipped.
-All peptides should between 8 and 14-mers.
+All peptides should between 8 and 14-mers. Do NOT use filenames with special characters like '*' (e.g., "HLA-A*02:01.txt").
 
-allele:
+-a allele:
 HLA-I allele. Use the simple nomenclature like A0101.
 A01:01, A*01:01 or HLA-A*01:01 are also supported, but not
 recommanded. If you want to make predictions with multiple
 alleles, list the different alleles separated by a single comma ","
 (e.g. -a A0101,A2501,B0801,B1801).
 
-output_file:
-The name of the output file.
-
-cysteine (-c, optional):
--c 0 excludes all cysteine containing peptides. -c 1 keeps them (default).
+-o output_file:
+The name of the output file. Do NOT use filenames with special characters like '*' (e.g., "HLA-A*02:01.txt").
 
 
 
@@ -107,19 +108,19 @@ OTHER INFORMATION
 
 - MixMHCpred is meant for scoring different peptides and prioritizing
   the most likely HLA-I ligands. As it is trained on naturally presented
-  peptides, it does not output a predicted affinity value, simply a score and a %rank.
+  peptides, it does not output a predicted affinity value, simply a score.
 
 - The score is computed for each allele provided in input, and the maximal score (column 2) is used to determine the most likely allele (column 3).
 
 - The %rank column shows how likely it is to have a peptide with a given
-  score (or higer) for the set of alleles given in input. It is computed based on
+  score (or higer) for each allele given in input. It is computed based on
   a random sampling of 700,000 peptides from the human proteome (8- to 14-mers).
-  This %rank is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). For a single allele, scores larger than 0 correspond to %rank smaller than 1%.
+  This %rank is simply an indicator of how a given peptide scores compares to a universe of random peptides (similar to percentile rank used in other HLA-I ligand predictors). Scores larger than 0 correspond to %rank smaller than 0.1%.
   
-- The list of alleles is provided in MixMHCpred2.1/lib/allele_list.txt.
+- The list of alleles is provided in MixMHCpred2.2/lib/allele_list.txt.
   The third column indicates the number of motifs used to describe the specificity of a given allele and a given peptide length
   
-- The MixMHCpred2.1/temp/ directory is used to store temporary files. Make
+- The MixMHCpred2.2/temp/ directory is used to store temporary files. Make
   sure there is no restriction for writing and reading files in this directory.
 
 - Predictions of Cystein containing peptides are less reliable due to the low detection rate of Cys in MS.
@@ -128,7 +129,6 @@ OTHER INFORMATION
 
 - the lib/pwm/ folder contains the different PWMs for each allele and each length of ligands.
   The 6th line indicates the weight (differs than one for alleles modelled with multiple motifs),
-  the number of unique ligands used to train the model and the origin of the data
-  (1: unfiltered and curated MS data; 2: IEDB_MS data; 3: IEDB_non_MS data; 0: extrapolation from other lengths).
+  the number of unique ligands used to train the model.
 
-- Predictions can be run for 8- to 14-mers. The length distribution obtained in MS data is explicitely incorporated in the scores of the peptides (see Gfeller et al., J Immunol 2018).
+- Predictions can be run for 8- to 14-mers. The length distribution obtained in MS data is explicitely incorporated in the scores of the peptides (see Gfeller et al., BioRxiv 2022).

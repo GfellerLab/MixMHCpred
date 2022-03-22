@@ -6,7 +6,7 @@
 
 # For any question or commercial use, please ask david.gfeller@unil.ch.
 
-# Copyright (2018) David Gfeller.
+# Copyright (2022) David Gfeller.
 ################
 
 use strict;
@@ -20,14 +20,13 @@ use File::Path qw( make_path );
 ###########
 
 
-my ($alleles, $input, $dir, $output_file, $lib_dir, $cys);
+my ($alleles, $input, $dir, $output_file, $lib_dir);
 
 GetOptions ("alleles=s" => \$alleles,    # allele
 	    "input=s"   => \$input,      # input file
 	    "dir=s"   => \$dir,      # current path
 	    "output=s"   => \$output_file,      # output file
-	    "lib=s"   => \$lib_dir,      # MixMHCpred package
- 	    "cys=i"   => \$cys)      # Do not include Cystein containing peptides
+	    "lib=s"   => \$lib_dir)      # MixMHCpred package
     or die("Error in command line arguments\n");
 
 
@@ -56,6 +55,9 @@ foreach $h (@allele_input){
     if(substr($h, 3, 1) eq ":"){
 	$h=substr($h, 0, 3).substr($h, 4, length($h)-3);
     }
+    if(substr($h, 0, 3) eq "H-2"){
+	$h="H2".substr($h, 3,  length($h)-2);
+    } 
     push @allele_list, $h;
 }
 
@@ -141,6 +143,7 @@ close IN;
 my @a=();
 my @Nmotif=([]); for(my $le=$Lmin; $le<=$Lmax; $le++){ for(my $i=0; $i<$nh; $i++){$Nmotif[$le][$i]=0;}}
 my @shifts=([]); for(my $le=$Lmin; $le<=$Lmax; $le++){ for(my $i=0; $i<$nh; $i++){$shifts[$le][$i]=0;}}
+my @shifts_sd=([]); for(my $le=$Lmin; $le<=$Lmax; $le++){ for(my $i=0; $i<$nh; $i++){$shifts_sd[$le][$i]=0;}}
 
 my $t;
 my $cond=0;
@@ -170,10 +173,10 @@ while($l=<IN>){
     foreach $h (@allele_list){
 	if($a[1] eq $maph{$h}){
 	    $shifts[$a[0]][$t]=$a[2];
-	    if(substr($h, 0, 1) eq "C"){
-		#$shifts[$a[0]][$t]=$a[2]+0.3;
-	    }
+	    $shifts_sd[$a[0]][$t]=$a[3];
+	   
 	    #$shifts[$a[0]][$t]=0;   #Set all the shifts to 0.
+	    #$shifts_sd[$a[0]][$t]=1; #Set all the shifts_sd to 1.
 	}
 	$t++;
     }
@@ -189,7 +192,7 @@ my @allele_list_map=();
 foreach $h (@allele_list){
 
     if(!exists $maph{$h}){
-	print "Predictions not available in MixMHCpred for $h...\n";
+	print "Predictions not available in MixMHCpred2.2 for $h...\n";
 	exit();
     }
     push @allele_list_map, $maph{$h};
@@ -221,11 +224,13 @@ close OUT;
 ############
 
 my @shifts_all=();
+my @shifts_sd_all=();
 my @Nmotif_all=();
 
 for(my $l=$Lmin; $l<=$Lmax; $l++){
     push @Nmotif_all, @{$Nmotif[$l]};
     push @shifts_all, @{$shifts[$l]};
+    push @shifts_sd_all, @{$shifts_sd[$l]};
 }
 
 
@@ -236,9 +241,9 @@ for(my $l=$Lmin; $l<=$Lmax; $l++){
 my $sys=$^O;
 
 if ($sys eq "MSWin32" || $sys eq "msys"){
-    system("$lib_dir$sep"."MixMHCpred.exe $output_file $lib_dir $rd $input $cys $nh @allele_list @allele_list_map @Nmotif_all @shifts_all");
+    system("$lib_dir$sep"."MixMHCpred.exe $output_file $lib_dir $rd $input $nh @allele_list @allele_list_map @Nmotif_all @shifts_all @shifts_sd_all");
 } else {
-    system("$lib_dir$sep"."MixMHCpred.x $output_file $lib_dir $rd $input $cys $nh @allele_list @allele_list_map @Nmotif_all @shifts_all");
+    system("$lib_dir$sep"."MixMHCpred.x $output_file $lib_dir $rd $input $nh @allele_list @allele_list_map @Nmotif_all @shifts_all @shifts_sd_all");
 }
 
 if(-d "$tmp_dir"){
