@@ -1,8 +1,8 @@
 
 ###############
-# MixMHCpred2.2 is a predictor of HLA-I ligand displayed at the cell surface.
+# MixMHCpred is a predictor of HLA-I ligand displayed at the cell surface.
 #
-# MixMHCpred2.2 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
@@ -14,7 +14,7 @@
 # If you use MixMHCpred2.2 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
 # and
-# Gfeller et al. Improved predicitons of immunogenicity reveal SARS-COV2 CD8 T-cell epitopes, BioRxiv (2022).
+# Gfeller et al. Improved predictions of immunogenicity reveal SARS-Cov-2 CD8 T-cell epitopes, BioRxiv (2022).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
@@ -27,7 +27,7 @@ NEW FEATURES OF VERSION 2.2
 
 - Improved modelling of peptide length distributions.
 - Expanded training set from new HLA peptidomics studies.
-- No fixed bins to compute %rank
+- improved computation of %Rank
 - Improved efficiency. 
 
 ############
@@ -60,6 +60,10 @@ melanoma sample (from Bassani-Sternberg et al. Nat Comm 2016).
 - Do not use spaces in your file or directory names.
 - Do not use other special characters (e.g., *, ?, %, &,...) in file or directory names.
 
+For Mac:
+
+Depending on your security setup, you may have to manually allow MixMHCpred executable to run (Systems Preferences -> Security & Privacy -> General)
+
 For Linux:
 
 After step 3), you also need to compile the MixMHCpred.cc code. Go to
@@ -87,7 +91,7 @@ MixMHCpred -i input_file -o output_file -a allele1,allele2
 -i input_file:
 File listing all the peptides. Ideally a text file, but fasta files
 are supported and lines starting with ">" are skipped.
-All peptides should between 8 and 14-mers. Do NOT use filenames with special characters like '*' (e.g., "HLA-A*02:01.txt").
+All peptides should have lengths between 8 and 14. Do NOT use filenames with special characters like '*' (e.g., "HLA-A*02:01.txt").
 
 -a allele:
 HLA-I allele. Use the simple nomenclature like A0101.
@@ -125,5 +129,3 @@ OTHER INFORMATION
 - the lib/pwm/ folder contains the different PWMs for each allele and each length of ligands.
   The 6th line indicates the weight (differs than one for alleles modelled with multiple motifs),
   the number of unique ligands used to train the model.
-
-- Predictions can be run for 8- to 14-mers.

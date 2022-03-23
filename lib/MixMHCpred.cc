@@ -353,7 +353,7 @@ void make_pred(){
     fprintf (pFile, "# MixMHCpred is freely available for academic users.\n");
     fprintf (pFile, "# Private companies should contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
     fprintf (pFile, "#\n# To cite MixMHCpred2.2, please refer to:\n");
-    fprintf (pFile, "# Gfeller et al. Improved predicitons of immunogenicity reveal SARS-COV2 CD8 T-cell epitopes, BioRxiv (2022).\n");
+    fprintf (pFile, "# Gfeller et al. Improved predictions of immunogenicity reveal SARS-Cov-2 CD8 T-cell epitopes, BioRxiv (2022).\n");
     fprintf (pFile, "# \n");
     fprintf (pFile, "####################\n");
 

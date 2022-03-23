@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ###############
-# MixMHCpred2.2 is a predictor of HLA ligand displayed at the cell surface.
+# MixMHCpred is a predictor of HLA ligand displayed at the cell surface.
 #
-# MixMHCpred2.2 can be used freely by academic groups for non-commercial purposes (see license).
+# MixMHCpred can be used freely by academic groups for non-commercial purposes (see license).
 # The product is provided free of charge, and, therefore, on an "as is"
 #  basis, without warranty of any kind.
 #
@@ -15,7 +15,7 @@
 # If you use MixMHCpred2.2 in a publication, please cite:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
 # and
-# Gfeller et al. Improved predicitons of immunogenicity reveal SARS-COV2 CD8 T-cell epitopes, BioRxiv (2022).
+# Gfeller et al. Improved predictions of immunogenicity reveal SARS-Cov-2 CD8 T-cell epitopes, BioRxiv (2022).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
@@ -24,7 +24,7 @@
 
 # Set the location here. This has to be manually done on your machine.
 # Make sure you are not using spaces or other special characters in your paths.
-lib_path="YOUR PATH TO MixMHCpred/lib FOLDER"
+lib_path="/PATH_TO_MIXMHCPRED/lib"
 
 #echo $lib_path
 
