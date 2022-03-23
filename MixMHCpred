@@ -24,7 +24,7 @@
 
 # Set the location here. This has to be manually done on your machine.
 # Make sure you are not using spaces or other special characters in your paths.
-lib_path="/PATH_TO_MIXMHCPRED/lib"
+lib_path="/app/MixMHCpred/lib"
 
 #echo $lib_path
 
