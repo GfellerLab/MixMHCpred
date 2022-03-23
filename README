@@ -27,7 +27,7 @@ NEW FEATURES OF VERSION 2.2
 
 - Improved modelling of peptide length distributions.
 - Expanded training set from new HLA peptidomics studies.
-- improved computation of %Rank
+- Improved computation of %Rank
 - Improved efficiency. 
 
 ############
@@ -44,7 +44,7 @@ of your choice, where you have writing permissions.
 3) Open the MixMHCpred file and replace lib_path by the
 path to the MixMHCpred2.2/lib directory where you have installed the script
 
-4) To run it from anywhere on your computer, add the MixMHCpred2.2. directory to your path.
+4) To run it from anywhere on your computer, add the MixMHCpred2.2 directory to your path.
 
 5) To test your installation, make sure you are in the MixMHCpred2.2/ directory and run the command (should not take more than a few seconds):
 
