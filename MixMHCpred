@@ -13,9 +13,12 @@
 # To do so, please contact eauffarth@licr.org at the Ludwig Institute for Cancer Research Ltd.
 #
 # If you use MixMHCpred2.2 in a publication, please cite:
+# Gfeller et al. Predictions of immunogenicity reveal potent SARS-Cov-2 CD8 T-cell epitopes, BioRxiv (2022).
+#
+# For older versions of MixMHCpred, you can refer to:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
 # and
-# Gfeller et al. Predictions of immunogenicity reveal potent SARS-Cov-2 CD8 T-cell epitopes, BioRxiv (2022).
+# Gfeller D, et al. The Length Distribution and Multiple Specificity of Naturally Presented HLA-I Ligands. J. Immunol (2018).
 #
 # For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 #
