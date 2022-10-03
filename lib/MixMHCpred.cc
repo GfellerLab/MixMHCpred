@@ -351,7 +351,7 @@ void make_pred(){
     fprintf (pFile, "# Alleles: %s",alleles[0]); for(int h=1; h<nh; h++){fprintf (pFile, ", %s", alleles[h]);} fprintf (pFile, "\n");
     fprintf (pFile, "# Input file: %s\n", input_file_original);
     fprintf (pFile, "# MixMHCpred is freely available for academic users.\n");
-    fprintf (pFile, "# Private companies should contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
+    fprintf (pFile, "# Private companies should contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
     fprintf (pFile, "#\n# To cite MixMHCpred2.2, please refer to:\n");
     fprintf (pFile, "# Gfeller et al. Predictions of immunogenicity reveal potent SARS-Cov-2 CD8 T-cell epitopes, BioRxiv (2022).\n");
     fprintf (pFile, "# \n");
