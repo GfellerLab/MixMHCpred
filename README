@@ -9,10 +9,10 @@
 # FOR-PROFIT USERS
 # If you plan to use MixMHCpred (version 2.2) or any data provided with the script in any for-profit
 # application, you are required to obtain a separate  license.
-# To do so, please contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd.
+# To do so, please contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for  Cancer Research Ltd.
 #
 # If you use MixMHCpred2.2 in a publication, please cite:
-# Gfeller et al. Predictions of immunogenicity reveal potent SARS-Cov-2 CD8 T-cell epitopes, BioRxiv (2022).
+# Gfeller et al. Improved predictions of antigen presentation and TCR recognition with MixMHCpred2.2 and PRIME2.0 reveal potent SARS-CoV-2 CD8+ T-cell epitopes , Cell Systems (2023).
 #
 # For older versions of MixMHCpred, you can refer to:
 # Bassani-Sternberg M et al. Deciphering HLA motifs across HLA peptidomes improves neo-antigen predictions and identifies allostery regulating HLA specificity, PLoS Comp Bio (2017).
@@ -31,7 +31,7 @@ NEW FEATURES OF VERSION 2.2
 - Improved modelling of peptide length distributions.
 - Expanded training set from new HLA peptidomics studies.
 - Improved computation of %Rank
-- Improved efficiency. 
+- Improved efficiency.
 
 ############
 INSTALLATION
@@ -123,7 +123,7 @@ OTHER INFORMATION
   score (or higer) for each allele given in input. It is computed based on
   a random sampling of 700,000 peptides from the human proteome (8- to 14-mers).
   The %rank should be used to rank peptides.
-  
+
 - MixMHCpred can be run with almost 400 human HLA-I alleles.
 
 - The MixMHCpred2.2/temp/ directory is used to store temporary files. Make

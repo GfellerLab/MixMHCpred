@@ -11,7 +11,7 @@
 #include <stdio.h>      /* printf, fgets */
 #include <stdlib.h>     /* atoi */
 #include <string.h>
-#include <math.h> 
+#include <math.h>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -66,7 +66,7 @@ int main(int argc, char ** argv){
     int inc=6;
     Lmax=15;
     Lmin=8;
-    
+
     output_file = new char[4096];
     strcpy(output_file, argv[1]);
 
@@ -77,10 +77,10 @@ int main(int argc, char ** argv){
 
     input_file_original = new char[4096];
     strcpy(input_file_original, argv[4]);
-    
+
     input_file=new char[4096];
     sprintf(input_file, "%s/../temp/%d/input.txt", lib_dir, rd);
-    
+
     nh=atoi(argv[5]);
 
     alleles=new char*[nh];
@@ -88,14 +88,14 @@ int main(int argc, char ** argv){
 	alleles[i]=new char[4096];
 	strcpy(alleles[i], argv[inc+i]);
     }
-    
+
     alleles_map=new char*[nh];
     for(int i=0; i<nh; i++){
 	alleles_map[i]=new char[4096];
 	strcpy(alleles_map[i], argv[inc+nh+i]);
     }
 
-    
+
     Nmotifs=new int*[Lmax];
     for(int l=Lmin; l<Lmax; l++){
 	Nmotifs[l]=new int[nh];
@@ -103,7 +103,7 @@ int main(int argc, char ** argv){
 	    Nmotifs[l][i]=atoi(argv[inc+(l-Lmin+2)*nh+i]);
 	}
     }
-    
+
     shifts=new double*[Lmax];
     for(int l=Lmin; l<Lmax; l++){
 	shifts[l]=new double[nh];
@@ -119,7 +119,7 @@ int main(int argc, char ** argv){
 	  shifts_sd[l][i]=atof(argv[inc+(l-Lmin+2+2*(Lmax-Lmin))*nh+i]);
 	}
     }
-    
+
     //Read the number of thresholds
     char file [4096];
     string nada="";
@@ -139,28 +139,28 @@ int main(int argc, char ** argv){
 	cout << "Unable to open file: " << file << endl;
 	exit(2);
     }
-    
+
     rank_val=new double*[nh];
     for(int i=0; i<nh; i++){
 	rank_val[i]=new double[Nthr];
     }
-    
+
     rank_thr=new double*[nh];
     for(int i=0; i<nh; i++){
 	rank_thr[i]=new double[Nthr];
     }
-    
+
     load_peptides();
 
     load_pwm();
-    
+
     load_Pval();
     //comp_Pval();
-    
+
     make_pred();
-    
+
     return(0);
-    
+
 }
 
 //Load the %rank corresponding to different scores.
@@ -170,7 +170,7 @@ void load_Pval(){
 
     char *rfile;
     rfile=new char[4096];
-    
+
     for(int i=0; i<nh; i++){
 	sprintf(rfile, "%s/PerRank/%s.txt", lib_dir, alleles_map[i]);
 	afile.open(rfile, ios::in);
@@ -189,14 +189,14 @@ void load_peptides(){
 
     N=20;
     Cmax=10;
-    
+
     fstream afile;
     afile.open(input_file, ios::in);
     afile>>Np;
-    
+
     peptides=new int*[Np];
-    lg=new int[Np]; 
-    
+    lg=new int[Np];
+
     for(int i=0; i<Np; i++){
 	afile>>lg[i];
 	peptides[i]=new int[lg[i]];
@@ -237,15 +237,15 @@ void load_pwm(){
     string line;
     int tmp;
     double t;
-    
+
     pwm_file=new char[4096];
 
-    
-    
+
+
     for(int l=Lmin; l<Lmax; l++){
-	
+
 	for(int h=0; h<nh; h++){
-    
+
 	    for(int c=0; c<Nmotifs[l][h]; c++){
 		sprintf(pwm_file, "%s/pwm/class1_%d/%s_%d.txt", lib_dir, l, alleles_map[h], c+1);
 		myfile.open(pwm_file);
@@ -262,9 +262,9 @@ void load_pwm(){
 		}
 		myfile.close();
 	    }
-	  
+
 	}
-    
+
 	for(int h=0; h<nh; h++){
 	    t=0;
 	    for(int c=0; c<Nmotifs[l][h]; c++){
@@ -283,7 +283,7 @@ void make_pred(){
     char *letter;
     letter=new char[N+1];
     strcpy(letter, "ACDEFGHIKLMNPQRSTVWY");
-    
+
     double **score;
     score=new double*[nh];
     for(int h=0; h<nh; h++){
@@ -298,20 +298,22 @@ void make_pred(){
     int best_pos;
     double best_rank;
     int cond;
-    
+
     double tscore;
     double min_score=-100;
     double ttscore;
-    
+
     //Compute the scores
     int aa;
     for(int i=0; i<Np; i++){
 
 	for(int h=0; h<nh; h++){
 	    score[h][i]=0;
-	    
+
+
 	    for(int c=0; c<Nmotifs[lg[i]][h]; c++){
 		tscore=1;
+
 		for(int p=0; p<lg[i]; p++){
 		    aa=peptides[i][p];
 		    tscore=tscore*(pwm[lg[i]][h][c][aa][p]);
@@ -320,7 +322,7 @@ void make_pred(){
 	    }
 	    score[h][i]=log(score[h][i])/lg[i];
 	    score[h][i]=(score[h][i]-shifts[lg[i]][h])/shifts_sd[lg[i]][h];
-		
+
 	    //Now compute the ranks
 	    if(score[h][i]>=rank_thr[h][0]){
 		rank[h][i]=exp(rank_val[h][0]);
@@ -338,22 +340,22 @@ void make_pred(){
 	    }
 	}
     }
-     
-  
+
+
     //Print the output
-    
+
     FILE *pFile;
     pFile=fopen(output_file,"w");
-    
-    
+
+
     fprintf (pFile, "####################\n");
     fprintf (pFile, "# Output from MixMHCpred (v2.2)\n");
     fprintf (pFile, "# Alleles: %s",alleles[0]); for(int h=1; h<nh; h++){fprintf (pFile, ", %s", alleles[h]);} fprintf (pFile, "\n");
     fprintf (pFile, "# Input file: %s\n", input_file_original);
     fprintf (pFile, "# MixMHCpred is freely available for academic users.\n");
-    fprintf (pFile, "# Private companies should contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
+    fprintf (pFile, "# Private companies should contact eauffarth@licr.org or lfoit@licr.org at the Ludwig Institute for Cancer Research Ltd for commercial licenses.\n");
     fprintf (pFile, "#\n# To cite MixMHCpred2.2, please refer to:\n");
-    fprintf (pFile, "# Gfeller et al. Predictions of immunogenicity reveal potent SARS-Cov-2 CD8 T-cell epitopes, BioRxiv (2022).\n");
+    fprintf (pFile, "# Gfeller et al. Improved predictions of antigen presentation and TCR recognition with MixMHCpred2.2 and PRIME2.0 reveal potent SARS-CoV-2 CD8+ T-cell epitopes , Cell Systems (2023).\n");
     fprintf (pFile, "# \n");
     fprintf (pFile, "####################\n");
 
@@ -363,7 +365,7 @@ void make_pred(){
  	fprintf (pFile, "\tScore_%s\t%%Rank_%s", alleles[h], alleles[h]);
     }
     fprintf (pFile, "\n");
-    
+
     double pval;
 
     for(int i=0; i<Np; i++){
@@ -380,7 +382,7 @@ void make_pred(){
 		best_pos=h;
 	    }
 	}
-	
+
 	if(best_pos > -1){
 	    fprintf (pFile, "\t%.6f\t", score[best_pos][i]);
 	    fprintf (pFile, "%s", alleles[best_pos]);
@@ -395,7 +397,7 @@ void make_pred(){
 		fprintf (pFile, "\tNA\tNA");
 	    }
 	}
-	
+
 	fprintf (pFile, "\n");
     }
     fclose (pFile);
