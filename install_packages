@@ -1,0 +1,48 @@
+#!/bin/bash
+
+pip install -r ./code/setup_pythonLibrary.txt
+
+# Function to install MAFFT for Debian-based Linux
+install_mafft_debian() {
+    sudo apt-get update
+    sudo apt-get install -y mafft
+}
+
+# Function to install MAFFT for Red Hat-based Linux
+install_mafft_redhat() {
+    sudo yum install -y mafft
+}
+
+# Function to install MAFFT for macOS
+install_mafft_mac() {
+    brew install mafft
+    brew link --overwrite mafft 
+}
+
+# Detect the operating system
+OS="$(uname -s)"
+
+case "${OS}" in
+    Linux*)     
+        # Assuming a Debian-based or Red Hat-based Linux distribution
+        if [ -f /etc/debian_version ]; then
+            install_mafft_debian
+        elif [ -f /etc/redhat-release ]; then
+            install_mafft_redhat
+        else
+            echo "Unsupported Linux distribution"
+        fi
+        ;;
+    Darwin*)    
+        # macOS
+        install_mafft_mac
+        ;;
+    *)          
+        echo "Unsupported or unknown operating system: ${OS}"
+        ;;
+esac
+
+
+
+
+

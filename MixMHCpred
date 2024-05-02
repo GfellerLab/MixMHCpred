@@ -1,0 +1,176 @@
+#!/bin/bash
+
+
+
+
+# Get the absolute path to the directory containing the executable file
+executable_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# Get the absolute path to the directory containing the libraries
+lib_path="$executable_dir/lib"
+
+
+if [[ "$lib_path" =~ " " ]]; then
+    echo Spaces in path to MixMHCpred are not supported
+    echo Make sure you have set the correct path in MixMHCpred
+    exit 1;
+fi
+
+
+
+usage="Usage: MixMHCpred -i INPUT_FILE -o OUTPUT_FILE [-a LIST_OF_ALLELES] [-s SEQUENCE_FILE] [-p PEPTIDES_SCORING] [-m OUTPUT_MOTIFS]"
+
+# Default values for the new options
+output_motifs=0
+sequences=""
+score_peptides=0
+alleles=""
+
+# Make sure the first line of the -h output is the version (used in PRIME)
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+cat <<END
+MixMHCpred3.0
+
+$usage
+
+============================================== Module 1 ==============================================
+
+Mandatory parameters:
+  -i, --input               Absolute or relative path to the input file (fasta format or list of peptides)
+  -o, --output              Name of the output file or directory 
+  -a, --alleles             List of HLA alleles separated by commas (e.g., A0301,A2402,B1501,B3906,C0303,C0702)
+
+Optional parameters:
+  -m, --output_motifs       Plot the logos and create an html file (default: 0 , not to plot)
+  -p, --peptides_scoring    Binding Predictions (default: 1)  
+
+============================================== Module 2 ==============================================
+
+Mandatory parameters:
+  -s, --Sequence            Name of the FASTA file of sequences to align 
+  -o, --output              Name of the output file or directory 
+
+Optional parameters:
+  -m, --output_motifs       Plot the logos and create an html file (default: 0 , not to plot)
+  -i, --input               Absolute or relative path to the input file (fasta format or list of peptides)
+  -p, --peptides_scoring    Binding Predictions (default: 0, not to compute if -i is empty)  
+
+
+END
+	exit 0;
+fi
+
+
+# Parse flags
+while [ $# -gt 0 ]; do
+    case $1 in
+        -i | --input) 
+            shift
+            if [[ $1 == -* || -z $1 ]]; then
+                echo "Error: Missing or invalid value for -i or --input argument"
+                exit 1
+            fi
+            input=$1
+            shift
+            ;;
+        -o | --output) 
+            shift
+            if [[ $1 == -* || -z $1 ]]; then
+                echo "Error: Missing or invalid value for -o or --output argument"
+                exit 1
+            fi
+            output_file=$1
+            shift
+            ;;
+        -a | --alleles) 
+            shift
+            if [[ $1 == -* || -z $1 ]]; then
+                echo "Error: Missing or invalid value for -a or --alleles argument"
+                exit 1
+            fi
+            alleles=$1
+            shift
+            ;;
+        -s | --Sequence) 
+            shift
+            if [[ $1 == -* || -z $1 ]]; then
+                echo "Error: Missing value for -s or --Sequence argument"
+                exit 1
+            fi
+            sequences=$1
+            shift
+            ;;
+        -p | --peptides_scoring) 
+            shift
+            if [[ $1 == -* || -z $1 ]]; then
+                echo "Error: Missing value for -p or --peptides_scoring argument"
+                exit 1
+            fi
+            score_peptides=$1
+            shift
+            ;;
+        -m | --output_motifs) 
+            shift
+            if [[ $1 == -* || -z $1 ]]; then
+                echo "Error: Missing or invalid value for -m or --output_motifs argument"
+                exit 1
+            fi
+            output_motifs=$1
+            shift
+            ;;
+        *)
+            # This condition will catch any unexpected spaces
+            if [[ $1 != -* && ! -z $1 ]]; then
+                echo "Error: Unexpected space detected in input. Found: '$1'"
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+
+
+# Check if either -a/--alleles or -s/--Sequence is provided
+if [ -z "$alleles" ] && [ -z "$sequences" ]; then
+    echo "Error: Either -a/--alleles or -s/--Sequence option must be used"
+    echo "$usage"
+    exit 1
+fi
+
+# Check if both -s/--Sequence and -a/--alleles are used
+if { [ -n "$sequences" ] && [ "$score_peptides" -eq 1 ]&& [ -z "$alleles" ]; } || [ -n "$sequences" ] && [ -n "$alleles" ]; then
+# if [ -n "$sequences" ] && [ -n "$alleles" ]; then
+
+    echo "Error: Cannot use both -s/--Sequence and -a/--alleles options together"
+    exit 1
+fi
+
+
+# Check if -i/--input is needed and if it's provided
+if { [ -n "$sequences" ] && [ "$score_peptides" -eq 1 ]; } || [ -n "$alleles" ]; then
+    if [ -z "$input" ]; then
+        echo "Error: -i/--input is required with the provided options"
+        exit 1
+    fi
+fi
+
+
+
+# Run the appropriate Python script based on the options provided
+if [ -n "$sequences" ]; then
+    cmd="python3 $executable_dir/code/main_sequences.py -s $sequences -o $output_file -m $output_motifs -l $lib_path"
+    if [ -n "$input" ]; then
+        cmd+=" -i $input"
+    fi
+    if [ -n "$score_peptides" ]; then
+        cmd+=" -p $score_peptides"
+    fi
+    eval $cmd
+else
+    python3 $executable_dir/code/main.py -a $alleles -i $input -o $output_file -m $output_motifs -l $lib_path
+fi
+
+
+
+#2>/dev/null

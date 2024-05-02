@@ -1,0 +1,31 @@
+#!/bin/bash
+
+
+
+# Get the directory containing the MixMHCpred executable file
+executable_dir="$(pwd -P)"
+
+# Detect the user's shell
+user_shell=$(basename "$SHELL")
+
+case $user_shell in
+    bash)
+        echo "export PATH=\$PATH:$executable_dir" >> ~/.bashrc
+        source ~/.bashrc
+        ;;
+    zsh)
+        echo "export PATH=\$PATH:$executable_dir" >> ~/.zshrc
+        source ~/.zshrc
+        ;;
+    *)
+        echo "Unsupported shell: $user_shell"
+        echo "Please add the following line to your shell's configuration file:"
+        echo "export PATH=\$PATH:$executable_dir"
+        exit 1
+        ;;
+esac
+
+
+
+
+
