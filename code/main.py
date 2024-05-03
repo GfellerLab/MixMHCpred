@@ -33,6 +33,8 @@ if output_motifs == 0:
             Please choose a different file name.
         ''')
         exit()
+    if file_output[0:2] != './':
+        file_output = f'./{file_output}'
     # Extract the directory part from the file_output path
     directory = os.path.dirname(file_output)
 
