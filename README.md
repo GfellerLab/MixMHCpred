@@ -111,11 +111,13 @@ The script is invoked from the command line with various parameters that control
 
 Predicting peptide binding to specific MHC alleles:
 ```
-./MixMHCpred -i input/test.txt -o output/test_out.txt -a A0101,A0301
+./MixMHCpred -i input/test.txt -o output/test_out.txt -a A0101,A2501,B0801,B1801
 ```
+Compare your results with output/out_compare.txt.
+
 Predicting peptide binding to specific MHC alleles and plotting motifs:
 ```
-./MixMHCpred -i input/test.txt -o output/test_out -a A0101,A0301 -m 1 
+./MixMHCpred -i input/test.txt -o output/test_out -a A0101,A2501,B0801,B1801 -m 1 
 ```
 
 Aligning sequences from a FASTA file:
