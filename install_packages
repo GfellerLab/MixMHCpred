@@ -38,7 +38,7 @@ case "${OS}" in
         install_mafft_mac
         ;;
     *)          
-        echo "Unsupported or unknown operating system: ${OS}"
+        echo "Unsupported or unknown operating system: ${OS} - Predictions for new MHC allele sequences will not work."
         ;;
 esac
 

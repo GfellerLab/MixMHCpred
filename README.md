@@ -35,7 +35,8 @@ Copyright (2024) David Gfeller
 - Python 3.x installed (available here: https://www.python.org/downloads/)
 - Bash shell (default on macOS and Linux)
 - For Windows users:
-    - MixMHCpred is called through a bash script. So you need to have bash available on the Windows computers. If you don’t have one already, you could install git-bash for example, available here: https://gitforwindows.org/.
+    - **Recommnded**: to run MixMHCpred including full functionality, we recommend using the Windows Subsystems for Linux (WSL; installation instruction https://learn.microsoft.com/en-us/windows/wsl/install). This allows running MixMHCpred as if on a Linux system - you can then follow the commands indicated for Linux to install and run MixMHCpred.
+	- If you cannot use WSL, most functionality of MixMHCpred will work except the part to align new MHC allele sequences and make predictions for these new alleles. You nevertheless need to have bash available on the Windows computer as MixMHCpred is called through a bash script. If bash scripts cannot already be run on your computer, you could install git-bash for example to use this terminal instead of the cmd.exe (commands are more similar to Linux/Mac OS when using this terminal). It is available here: https://gitforwindows.org/. Depending on if you are using git-bash, cmd.exe or powershell, the commands to install/run MixMHCpred on Windows may vary a bit; we assume here that git-bash is used here.
 
 
 ## Installation
@@ -48,7 +49,7 @@ Copyright (2024) David Gfeller
     ```
     - For Mac:
     Depending on your security setup, you may have to manually allow MixMHCpred executable to run (Systems Preferences -> Security & Privacy -> General)
-4. **Install Required Packages**: Run the `install_packages` executable to install the necessary Python packages and MAFFT. This step ensures that all dependencies are correctly set up for MixMHCpred3.0 to function.
+4. **Install Required Packages**: Run the `install_packages` executable to install the necessary Python packages and MAFFT (see license https://mafft.cbrc.jp/alignment/software/license.txt). This step ensures that all dependencies are correctly set up for MixMHCpred3.0 to function.
     ```
     chmod +x install_packages
     ./install_packages
@@ -58,10 +59,16 @@ Copyright (2024) David Gfeller
     ```
     python3 -m venv mixmhcpred_env
     ```
-   Activate the virtual environment with:
+   Activate the virtual environment
+   - on Mac/Linux (or Windows with WSL):
     ```
     source mixmhcpred_env/bin/activate
     ```
+   - on Windows (if using git-bash):
+	```
+    source mixmhcpred_env/Scripts/activate
+    ```
+
     Install Required Packages
     ```
     chmod +x install_packages
@@ -97,26 +104,29 @@ The script is invoked from the command line with various parameters that control
 - The script requires either `-a/--alleles` or `-s/--Sequence` to be specified.
 - If `-s/--Sequence` is used, `-a/--alleles` should not be included, and vice versa.
 - Ensure there are no spaces in the path to the MixMHCpred directory, as they are not supported.
+-  if you added MixMHCpred to your path, you can run the tool `MixMHCpred` instead of `./MixMHCpred`.
+- **Only for Windows**: the  option `-s/--Sequence` for predicting a new MHC-I sequence will not work.
 
 ## Examples
 
-Predicting peptide binding to specific MHC alleles and plotting motifs:
-
+Predicting peptide binding to specific MHC alleles:
 ```
 ./MixMHCpred -i input/test.txt -o output/test_out.txt -a A0101,A0301
 ```
+Predicting peptide binding to specific MHC alleles and plotting motifs:
 ```
 ./MixMHCpred -i input/test.txt -o output/test_out -a A0101,A0301 -m 1 
 ```
 
-Aligning sequences from a FASTA file, plotting motifs and predicting peptide binding:
-
+Aligning sequences from a FASTA file:
 ```
 ./MixMHCpred -s input/To_align_sequences.fasta -o output/sequences_predictions 
 ```
+Aligning sequences from a FASTA file, plotting motifs:
 ```
 ./MixMHCpred -s input/To_align_sequences.fasta -o output/sequences_predictions -m 1
 ```
+Aligning sequences from a FASTA file, plotting motifs and predicting peptide binding:
 ```
 ./MixMHCpred -s input/To_align_sequences.fasta -o output/sequences_predictions -m 1 -i input/test.txt -p 1
 ```
