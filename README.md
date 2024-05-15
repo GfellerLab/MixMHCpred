@@ -13,7 +13,7 @@ application, you are required to obtain a separate license.
 To do so, please contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd.
 
 If you use MixMHCpred3.0 in a publication, please cite:
-Tadros et al. BioRxiv (2024).
+Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024) (available [here](https://doi.org/10.1101/2024.05.08.593183)).
 
 For the older version (MixMHCpred2.2), please cite:
 Gfeller et al. Improved predictions of antigen presentation and TCR recognition with MixMHCpred2.2 and PRIME2.0 reveal potent SARS-CoV-2 CD8+ T-cell epitopes , Cell Systems (2023).

@@ -439,7 +439,7 @@ if score_peptides == 1:
             "#",
             "# To cite MixMHCpred3.0, please refer to:",
             "# Gfeller et al. Improved predictions of antigen presentation and TCR recognition with MixMHCpred2.2 and PRIME2.0 reveal potent SARS-CoV-2 CD8+ T-cell epitopes , Cell Systems (2023).",
-            "# Tadros et al. BioRxiv (2023).",
+            "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024).",
             "####################"
         ]
 
