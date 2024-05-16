@@ -15,9 +15,6 @@ To do so, please contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institut
 If you use MixMHCpred3.0 in a publication, please cite:
 Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024) (available [here](https://doi.org/10.1101/2024.05.08.593183)).
 
-For the older version (MixMHCpred2.2), please cite:
-Gfeller et al. Improved predictions of antigen presentation and TCR recognition with MixMHCpred2.2 and PRIME2.0 reveal potent SARS-CoV-2 CD8+ T-cell epitopes , Cell Systems (2023).
-
 For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 
 Copyright (2024) David Gfeller

@@ -329,8 +329,8 @@ if len(Alleles_out)>0:
         f"# Input file: {file_input}",
         "# MixMHCpred is freely available for academic users.",
         "# Private companies should contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd for commercial licenses.",
+        "# ",
         "# To cite MixMHCpred3.0, please refer to:",
-        "# Gfeller et al. Improved predictions of antigen presentation and TCR recognition with MixMHCpred2.2 and PRIME2.0 reveal potent SARS-CoV-2 CD8+ T-cell epitopes , Cell Systems (2023).",
         "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024).",
         "####################"
     ]
@@ -343,8 +343,8 @@ else:
         f"# Input file: {file_input}",
         "# MixMHCpred is freely available for academic users.",
         "# Private companies should contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd for commercial licenses.",
+        "# ",
         "# To cite MixMHCpred3.0, please refer to:",
-        "# Gfeller et al. Improved predictions of antigen presentation and TCR recognition with MixMHCpred2.2 and PRIME2.0 reveal potent SARS-CoV-2 CD8+ T-cell epitopes , Cell Systems (2023).",
         "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024).",
         "####################"
     ]
