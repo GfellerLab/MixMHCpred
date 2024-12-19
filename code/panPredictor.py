@@ -288,7 +288,7 @@ def prot_scores_correction(Alleles,PWMs_scores,bias,standard_dev,L):
         for j in range(len(L)):
             a = PWMs_scores[j][i] - bias[i][j]
             a = a / standard_dev[i][j]
-            PWMs_scores_corr[i] = PWMs_scores_corr[i] + list(a)
+            PWMs_scores_corr[i] = PWMs_scores_corr[i] + a.tolist()
         PWMs_scores_corr[i] = np.sort(PWMs_scores_corr[i])[::-1]
     return PWMs_scores_corr
 
