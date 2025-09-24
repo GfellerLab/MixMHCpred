@@ -13,7 +13,7 @@ application, you are required to obtain a separate license.
 To do so, please contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd.
 
 If you use MixMHCpred3.0 in a publication, please cite:
-Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024) (available [here](https://doi.org/10.1101/2024.05.08.593183)).
+Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, Genome Medicine (2024) (available [here](https://doi.org/10.1186/s13073-025-01450-8)).
 
 For scientific questions, please contact David Gfeller (David.Gfeller@unil.ch)
 
