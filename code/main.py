@@ -207,7 +207,7 @@ if len(Alleles_out)>0:
     
     from panPredictor import *
     
-    seq_data = pd.read_csv(f"{lib_path}/MHC_I_sequences.txt", delim_whitespace= True)
+    seq_data = pd.read_csv(f"{lib_path}/MHC_I_sequences.txt", sep=r"\s+")
     Alleles_ = seq_data['Allele'].tolist()
     # Alleles_seq = list(seq_data['Sequence'])
     # Alleles_H = Alleles_

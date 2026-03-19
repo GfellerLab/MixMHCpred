@@ -187,7 +187,7 @@ def distance_to_training(lib_path,training_Alleles,predicted_Alleles):
 
     Allele_Pos_idx = get_Allele_index(f'{lib_path}/Allele_pos')
     # print(training_Alleles)
-    seq_data = pd.read_csv(f"{lib_path}/MHC_I_sequences.txt", delim_whitespace= True)
+    seq_data = pd.read_csv(f"{lib_path}/MHC_I_sequences.txt", sep=r"\s+")
     for x in training_Alleles:
         if x not in seq_data['Allele'].tolist():
             print(f'{x} Fuck')
