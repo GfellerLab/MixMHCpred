@@ -331,7 +331,7 @@ if len(Alleles_out)>0:
         "# Private companies should contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd for commercial licenses.",
         "# ",
         "# To cite MixMHCpred3.0, please refer to:",
-        "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024).",
+        "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, Genome Medicine (2025).",
         "####################"
     ]
 else:
@@ -345,7 +345,7 @@ else:
         "# Private companies should contact Nadette Bulgin (nbulgin@lcr.org) at the Ludwig Institute for Cancer Research Ltd for commercial licenses.",
         "# ",
         "# To cite MixMHCpred3.0, please refer to:",
-        "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024).",
+        "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, Genome Medicine (2025).",
         "####################"
     ]
 

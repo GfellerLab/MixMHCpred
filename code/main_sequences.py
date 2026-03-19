@@ -439,7 +439,7 @@ if score_peptides == 1:
             "#",
             "# ",
             "# To cite MixMHCpred3.0, please refer to:",
-            "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, BioRxiv (2024).",
+            "# Tadros et al., Predicting MHC-I ligands across alleles and species: How far can we go?, Genome Medicine (2025).",
             "####################"
         ]
 
