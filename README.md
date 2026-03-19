@@ -32,7 +32,7 @@ Copyright (2024) David Gfeller
 - Python 3.x installed (available here: https://www.python.org/downloads/)
 - Bash shell (default on macOS and Linux)
 - For Windows users:
-    - **Recommnded**: to run MixMHCpred including full functionality, we recommend using the Windows Subsystems for Linux (WSL; installation instruction https://learn.microsoft.com/en-us/windows/wsl/install). This allows running MixMHCpred as if on a Linux system - you can then follow the commands indicated for Linux to install and run MixMHCpred.
+    - **Recommended**: to run MixMHCpred including full functionality, we recommend using the Windows Subsystems for Linux (WSL; installation instruction https://learn.microsoft.com/en-us/windows/wsl/install). This allows running MixMHCpred as if on a Linux system - you can then follow the commands indicated for Linux to install and run MixMHCpred.
 	- If you cannot use WSL, most functionality of MixMHCpred will work except the part to align new MHC allele sequences and make predictions for these new alleles. You nevertheless need to have bash available on the Windows computer as MixMHCpred is called through a bash script. If bash scripts cannot already be run on your computer, you could install git-bash for example to use this terminal instead of the cmd.exe (commands are more similar to Linux/Mac OS when using this terminal). It is available here: https://gitforwindows.org/. Depending on if you are using git-bash, cmd.exe or powershell, the commands to install/run MixMHCpred on Windows may vary a bit; we assume here that git-bash is used here.
 
 
