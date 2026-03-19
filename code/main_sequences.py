@@ -258,7 +258,7 @@ def distance_to_training_special(lib_path,training_Alleles,seq):
 
     Allele_Pos_idx = get_Allele_index(f'{lib_path}/Allele_pos')
     # print(training_Alleles)
-    seq_data = pd.read_csv(f"{lib_path}/MHC_I_sequences.txt", delim_whitespace= True)
+    seq_data = pd.read_csv(f"{lib_path}/MHC_I_sequences.txt", sep=r"\s+")
 
     Alleles_seq_training = [seq_data[seq_data['Allele']== allele]['Sequence'].iloc[0] for allele in training_Alleles]
 
