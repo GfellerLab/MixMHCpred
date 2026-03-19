@@ -190,7 +190,7 @@ def distance_to_training(lib_path,training_Alleles,predicted_Alleles):
     seq_data = pd.read_csv(f"{lib_path}/MHC_I_sequences.txt", sep=r"\s+")
     for x in training_Alleles:
         if x not in seq_data['Allele'].tolist():
-            print(f'{x} Fuck')
+            print(f'Warning: {x} not found in sequence data')
     Alleles_seq_training = [seq_data[seq_data['Allele']== allele]['Sequence'].iloc[0] for allele in training_Alleles]
 
     Alleles_seq_predicted = [seq_data[seq_data['Allele']== allele]['Sequence'].iloc[0] for allele in predicted_Alleles]
